@@ -1,4 +1,4 @@
-# 01 - Two Sum
+# 1. Two Sum
 
 Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.
 
@@ -6,7 +6,34 @@ You may assume that each input would have exactly one solution, and you may not 
 
 You can return the answer in any order.
 
-## 暴力解 (Brute Force)
+Example 1:
+
+```yml
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Output: Because nums[0] + nums[1] == 9, we return [0, 1].
+Example 2:
+```
+
+```yml
+Input: nums = [3,2,4], target = 6
+Output: [1, 2]
+Example 3:
+```
+
+```yml
+Input: nums = [3,3], target = 6
+Output: [0, 1]
+```
+
+Constraints:
+
+- `2 <= nums.length <= 103`
+- `-109 <= nums[i] <= 109`
+- `-109 <= target <= 109`
+- **Only one valid answer exists.**
+
+## **暴力解 (Brute Force)**
 
 時間複雜度：$O(n^2)$
 
@@ -32,9 +59,9 @@ var twoSum = function (nums, target) {
 };
 ```
 
-## 雜湊表（Hash Map）
+## **雜湊表（Hash Map）**
 
-### Two-pass
+### **Two-pass**
 
 先將傳入的陣列 `nums` 遍歷一次，做成 `Map`，key: value 為 `nums[i]`: `i`，然後再對 `nums` 遍歷一次，判斷各個值減掉 `target` 後是否存在於 `Map` 之中：
 
@@ -73,7 +100,7 @@ var twoSum = function (nums, target) {
 };
 ```
 
-### One-pass
+### **One-pass**
 
 建立空的 `Map`，遍歷一次傳入的陣列 `nums`
 
@@ -108,9 +135,9 @@ var twoSum = function (nums, target) {
 };
 ```
 
-## 也可使用陣列
+## **陣列（Array）**
 
-時間複雜度：$O(n)$
+時間複雜度：$O(n ^ 2)$
 
 空間複雜度：$O(n)$
 
@@ -126,12 +153,11 @@ var twoSum = function (nums, target) {
 
   for (let i = 0; i < length; i++) {
     const diffValue = target - nums[i];
-    const matchingIndex = array.indexOf(diffValue);
+    // O(n)，從 i 的下一個元素開始判斷是否存在 diffValue
+    const matchingIndex = nums.indexOf(diffValue, i + 1);
 
     if (matchingIndex !== -1) {
-      return [matchingIndex, i];
-    } else {
-      array.push(nums[i]);
+      return [i, matchingIndex];
     }
   }
   return [];
