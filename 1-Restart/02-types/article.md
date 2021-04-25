@@ -2,25 +2,25 @@
 
 JavaScript 是一門動態型別又是弱型別的語言，比其他語言較為寬鬆，所以起手快速、入門容易，但也隱含了許多特性和陷阱。
 
-## 如何區分靜態與動態？
+## 如何區分**靜態**與**動態**？
 
 > 區分靜態、動態的根本在於型別檢查（Type Checking）的時機。
 
-### 靜態型別語言（Statically Typed Languages）
+### **靜態型別語言（Statically Typed Languages）**
 
 - 型別檢查（Type Checking）發生於**編譯時期（Compile Time）**
 - 宣告變數必須使用明確的型別 ex: `String name = "CJ-Yang";`
 - 型別宣告完後，執行期間無法隨意更改變數的類型
 
-### 動態型別語言（Dynamically Type Languages）
+### **動態型別語言（Dynamically Type Languages）**
 
 - 型別檢查（Type Checking）發生於**執行時期（Runtime）**
 - 不用明確宣告變數的型別 ex: `var name = "CJ-Yang";`
 - 執行期間能任意更換變數的類型
 
-### 強型別 vs 弱型別
+### **強型別** vs **弱型別**
 
-強型別以 Java 為例
+強型別以 Java 為例：
 
 ```java
 int n = 123 + "456";
@@ -33,7 +33,7 @@ System.out.print(n);
 error: incompatible types: String cannot be converted to int
 ```
 
-需要透過顯性轉型（Explicitly Casting）
+需要透過顯性轉型（Explicitly Casting）：
 
 ```java
 int n = 123 + Integer.parseInt("456");
@@ -46,7 +46,7 @@ System.out.print(n);
 > 579
 ```
 
-### 弱型別以 JavaScript 為例
+弱型別以 JavaScript 為例：
 
 ```js
 var n = 123 + "456"; // 觸發 JS 隱含轉型（Implicit Coercion）
@@ -59,7 +59,7 @@ console.log(n);
 > "123456"
 ```
 
-### 對於 JavaScript 大家很常認為
+### 關於 JavaScript 大家很常會認為
 
 > Everything is an object.
 
@@ -67,7 +67,41 @@ console.log(n);
 
 > Values can behave like objects in JavaScript.
 
-也就是說值的表現（behave）類似物件，但是不代表值的型別就是物件（object）。
+也就是說值的表現（behave）類似物件，但是不代表值的原始型別就是物件（object）。
+
+更明確來說 JavaScript 會將原始值自動裝箱（autoboxing）成物件，讓我們能使用其物件的方法：
+
+```js
+var greeting = "Hello JS";
+console.log("型別：", typeof greeting);
+console.log("是否為字串物件？", greeting instanceof String);
+console.log("卻可以用 String 的方法！", greeting.split(""));
+```
+
+執行結果：
+
+```bash
+> 型別： string
+> 是否為字串物件？ false
+> 卻可以用 String 的方法！ (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
+```
+
+換成以 String Object 的方式宣告：
+
+```js
+var greeting = new String("Hello JS");
+console.log("型別：", typeof greeting);
+console.log("是否為字串物件？", greeting instanceof String);
+console.log("使用 String 的方法->", greeting.split(""));
+```
+
+執行結果：
+
+```bash
+> 型別： object
+> 是否為字串物件？ true
+> 使用 String 的方法-> (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
+```
 
 ## **原始（Primitive）** 型別
 
@@ -75,22 +109,23 @@ console.log(n);
 
 - String — 字串類型，ex: `'hello'`, `"hello"`, `` `hello` ``
 
-- Boolean — 邏輯類型：`true` 和 `false`
+- Boolean — 邏輯類型：`true` 和 `false`。除了 `false` 、`0`、`-0`、`0n`（bigint）、`""`、`null`、`undefined`、`NaN` 為 falsy，其餘皆為 truthy
+
 - Null — 特殊值，代表過去可能有值，但是現在沒有（無、空值、未知）
 
 - Undefined — 特殊值，代表未賦予值，未宣告（undeclared）變數時也會 `undefined` ，但意義不同。
 
-- Symbol — 用於表示獨一無二的值，ex: `Symbol("id")`
+- Symbol — 用於表示獨一無二的值。實務上很少使用，因為不支援舊瀏覽器。宣告不需要 `new`，ex: `Symbol("id")`
 
 - BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，ex: `10n`, `BigInt(10)`
 
 ## **複合（Composite）** 型別
 
-### 物件（Object）：萬物根源，最複雜的資料型態，擁有多個子型別（Subtype）
+### 物件（Object）：萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
 
-- Plain Object — 狹義的物件，透過 `{}` 或 `new Object()` 建立
-- Array — 陣列
-- Function — 函式
+- Plain Object — 狹義的物件，透過物件實字（literal）的 `{}` 或 `new Object()` 建立
+- Array — 陣列，透過陣列實字（literal）的 `[]` 或 `new Array()` 建立
+- Function — 函式，可以呼叫的物件（Callable Object）
 
 - Date — 時間日期
 
