@@ -1,5 +1,31 @@
+<<<<<<< HEAD:99-Algorthms/hashtable/349-intersection of two arrays.md
 # [349. Intersection of Two Arrays](https://leetcode.com/problems/intersection-of-two-arrays/) (Easy)
 
+=======
+# 349. Intersection of Two Arrays (Easy)
+
+Given two integer arrays nums1 and nums2, return an array of their intersection. Each element in the result must be unique and you may return the result in any order.
+
+Example 1:
+
+```yml
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2]
+Example 2:
+```
+
+```yml
+Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+Output: [9,4]
+Explanation: [4,9] is also accepted.
+```
+
+Constraints:
+
+- `1 <= nums1.length, nums2.length <= 1000`
+- `0 <= nums1[i], nums2[i] <= 1000`
+
+>>>>>>> d0190545c7d25f92b0042103ad9eeca32d2d786e:99-Algorthms/hashmap/349-intersection of two arrays.md
 ## **雜湊表（Hash Table）**
 
 ### **Solution 1**
