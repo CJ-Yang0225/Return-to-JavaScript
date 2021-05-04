@@ -1,8 +1,8 @@
 # [349. Intersection of Two Arrays](https://leetcode.com/problems/intersection-of-two-arrays/) (Easy)
 
-## **雜湊表（Hash Table）**
+運用雜湊表 key 的唯一性，在時間複雜度 $O(1)$ 的情況快速判斷或搜尋
 
-### **Solution 1**
+## **Solution 1**
 
 時間複雜度：$O(n ^ 2)$
 
@@ -25,7 +25,7 @@ var intersection = function (nums1, nums2) {
 };
 ```
 
-### **Solution 2**
+## **Solution 2**
 
 時間複雜度：$O(n)$
 
@@ -53,7 +53,7 @@ var intersection = function (nums1, nums2) {
 };
 ```
 
-因為 `delete()` 如果成功刪除會返回 `true`，反之 `false`，所以魔幻一點的寫法：
+因為 `delete()` 如果成功刪除會返回 `true`，反之 `false`，所以可以改成：
 
 ```js
 /**
@@ -71,7 +71,9 @@ var intersection = function (nums1, nums2) {
 };
 ```
 
-## **集合（Set）**
+## **Solution 3**
+
+### **集合（Set）**
 
 時間複雜度：$O(n)$
 
