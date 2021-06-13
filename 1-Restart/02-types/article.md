@@ -59,50 +59,6 @@ console.log(n);
 > "123456"
 ```
 
-### 關於 JavaScript 大家很常會認為
-
-> Everything is an object.
-
-### 但這句話實際含意應該是
-
-> Values can behave like objects in JavaScript.
-
-也就是說值的表現（behave）類似物件，但是不代表值的原始型別就是物件（object）。
-
-更明確來說 JavaScript 會將原始值自動裝箱（autoboxing）成物件，讓我們能使用其物件的方法：
-
-```js
-var greeting = "Hello JS";
-console.log("型別：", typeof greeting);
-console.log("是否為字串物件？", greeting instanceof String);
-console.log("卻可以用 String 的方法！", greeting.split(""));
-```
-
-執行結果：
-
-```bash
-> 型別： string
-> 是否為字串物件？ false
-> 卻可以用 String 的方法！ (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
-```
-
-換成以 String Object 的方式宣告：
-
-```js
-var greeting = new String("Hello JS");
-console.log("型別：", typeof greeting);
-console.log("是否為字串物件？", greeting instanceof String);
-console.log("使用 String 的方法->", greeting.split(""));
-```
-
-執行結果：
-
-```bash
-> 型別： object
-> 是否為字串物件？ true
-> 使用 String 的方法-> (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
-```
-
 ## **原始（Primitive）** 型別
 
 - Number — 包含整數、浮點數、Infinity、-Infinity 和 NaN（Not a Number）
@@ -123,7 +79,6 @@ console.log("使用 String 的方法->", greeting.split(""));
 
 ### 物件（Object）：萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
 
-- Plain Object — 狹義的物件，透過物件實字（literal）的 `{}` 或 `new Object()` 建立
 - Array — 陣列，透過陣列實字（literal）的 `[]` 或 `new Array()` 建立
 - Function — 函式，可以呼叫的物件（Callable Object）
 
