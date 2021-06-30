@@ -48,6 +48,14 @@ console.log("使用 String 的方法->", greeting.split(""));
 
 由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子般，稱之為原型鏈（prototype chain）。
 
+<!-- TODO -->
+
+### Computed Property
+
+### 深拷貝 vs 淺拷貝
+
+### Object.defineProperty()
+
 ## 原型 （Prototypes）
 
 JavaScript 的物件中（除了 null）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
@@ -88,3 +96,13 @@ for (prop in person) console.log(prop); // name sayHi
 // 所以當 person 找不到 sayHi 時，就會沿著 __proto__ 到 Person 的原型查看
 console.log(person.sayHi === person.__proto__.sayHi); // true
 ```
+
+<!-- TODO -->
+
+### instanceof
+
+### isPrototypeOf
+
+### Object.defineProperty() 舉例 in
+
+### Object.create()
