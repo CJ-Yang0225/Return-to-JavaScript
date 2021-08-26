@@ -58,5 +58,66 @@ console.log(a); // undefined
 a = "123";
 ```
 
-<!-- TODO -->
-## 作用域（Scope）
+## 作用域（Scope）的簡單例子
+
+`var` 不具備區塊作用域（Block Scope），如果不在 `function` 之中會引發無窮麻煩。
+
+像是著名的例子：
+
+```js
+for (var i = 0; i < 5; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, i * 1000);
+}
+
+console.log("outside:", i); // 穿透出迴圈，影響全域
+```
+
+執行結果：
+
+```bash
+5
+5
+5
+5
+5
+```
+
+因為 `setTimeout` 非同步事件，`for` 迴圈執行完後才會開始印出 `i`，這時的 `i` 已經是執行完後的值了
+
+解法一：
+
+使用具有塊級作用域的 `let`
+
+```js
+for (let i = 0; i < 5; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, i * 1000);
+}
+```
+
+解法二：
+
+通常提到這個例子真正想知道的答案，利用 IIFE 的函式作用域（Function Scope）
+
+```js
+for (var i = 0; i < 5; i++) {
+  (function (i) {
+    setTimeout(function () {
+      console.log(i);
+    }, i * 1000);
+  })(i);
+}
+```
+
+終於達到想要的結果了：
+
+```bash
+0
+1
+2
+3
+4
+```
