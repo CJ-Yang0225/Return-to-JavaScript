@@ -141,3 +141,9 @@ for (var i = 0; i < 5; i++) {
 3
 4
 ```
+
+## 參考
+
+- [我知道你懂 hoisting，可是你了解到多深？](https://blog.techbridge.cc/2018/11/10/javascript-hoisting/)
+- [理解 ES6 中的暫時死區(TDZ)
+  ](https://eddychang.me/es6-tdz)
