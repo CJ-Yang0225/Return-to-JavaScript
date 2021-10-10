@@ -58,7 +58,27 @@ console.log(a); // undefined
 a = "123";
 ```
 
-## 作用域（Scope）的簡單例子
+那麼 `let` 和 `const` 也會 Hoist 嗎？
+
+```js
+console.log(a); // ReferenceError: a is not defined
+console.log(b); // ReferenceError: b is not defined
+
+let a = "i am let";
+const b = "i am const";
+```
+
+乍看之下 `let`/`const` 沒有被提升，不過根據 ES6 標準中的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)指到：
+
+> The variables are created when their containing Lexical Environment
+> is instantiated but may not be accessed in any way until the
+> variable’s LexicalBinding is evaluated.
+
+說明當新的作用域（Lexical Environment）實體化後，在此作用域中使用 `let`/`const` 宣告的變數也會先被建立，但是變數未經過詞法綁定（LexicalBinding），所以被存取時就會拋出錯誤訊息。這段執行流程進入作用域建立變數，到變數可以開始被存取的一段時間，稱之為暫時死區（Temporal Dead Zone）。
+
+由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoist，只是 `var` 得到 `undefined`，而 `let`/`const` 是在執行前拋出錯誤。
+
+## 作用域（Scope）的例子
 
 `var` 不具備區塊作用域（Block Scope），如果不在 `function` 之中會引發無窮麻煩。
 
