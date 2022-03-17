@@ -93,11 +93,12 @@ NumArray.prototype.sumRange = function (left, right) {
  * @param {number[]} nums
  */
 var NumArray = function (nums) {
-  var preSum = [0];
-  this.preSum = preSum;
+  const length = nums.length;
+  const prefixSum = new Array(length + 1).fill(0);
+  this.prefixSum = prefixSum;
 
-  for (var i = 1; i <= nums.length; i++) {
-    preSum[i] = preSum[i - 1] + nums[i - 1];
+  for (let i = 1; i < length + 1; i++) {
+    prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
   }
 };
 
@@ -107,7 +108,7 @@ var NumArray = function (nums) {
  * @return {number}
  */
 NumArray.prototype.sumRange = function (left, right) {
-  return this.preSum[right + 1] - this.preSum[left];
+  return this.prefixSum[right + 1] - this.prefixSum[left];
 };
 ```
 
