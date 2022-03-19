@@ -46,13 +46,32 @@ console.log("使用 String 的方法->", greeting.split(""));
 > 使用 String 的方法-> (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
 ```
 
+## 特別
+
+有沒有 `new` 的差異：
+
+```js
+const a = [String, Number, Boolean, Object, Function, Array].map(
+  (constructor) => constructor() // 做為一般 function
+);
+
+console.log(a);
+```
+
+```js
+const b = [String, Number, Boolean, Object, Function, Array].map(
+  (constructor) => new constructor() // 做為 function constructor
+);
+console.log(b);
+```
+
 ### JavaScript 的「物件」導向
 
 由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
 
 ## 原型 （Prototypes）
 
-JavaScript 的物件中（除了 null、undefined）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
+JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
 
 雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以連結到它，像是 `__proto__`（getter & setter） 或較正式的 `Object.getPrototypeOf()`；而函式建構式（function constructor）的原型可由該建構式的 `prototype` 來存取。
 
