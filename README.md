@@ -8,4 +8,8 @@
 
 [The Modern JavaScript Tutorial](https://javascript.info/)
 
+[Huli's blog](https://blog.huli.tw/)
+
+[PJCHENder 那些沒告訴你的小細節](https://pjchender.blogspot.com/)
+
 [冴羽的博客](https://github.com/mqyqingfeng/Blog)
