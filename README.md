@@ -12,4 +12,6 @@
 
 [PJCHENder 那些沒告訴你的小細節](https://pjchender.blogspot.com/)
 
+[JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/)
+
 [冴羽的博客](https://github.com/mqyqingfeng/Blog)
