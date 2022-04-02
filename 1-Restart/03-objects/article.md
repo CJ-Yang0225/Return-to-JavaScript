@@ -2,7 +2,7 @@
 
 物件是藉由字串類型的 `key`（property name）來儲存對應的資料，可以建立更複雜、更彈性的實體，所以每種型別之所以能自由使用其擁有的方法，就是透過物件進行包裝來達成的。由物件實字（literal）的 `{}` 或 `new Object()` 建立。
 
-## 因此大家會說
+## 因此會在 JavaScript 的討論中聽到
 
 > Everything is an object.
 
@@ -46,7 +46,7 @@ console.log("使用 String 的方法->", greeting.split(""));
 > 使用 String 的方法-> (8) ["H", "e", "l", "l", "o", " ", "J", "S"]
 ```
 
-## 特別
+### 小知識紀錄
 
 有沒有 `new` 的差異：
 
@@ -65,9 +65,46 @@ const b = [String, Number, Boolean, Object, Function, Array].map(
 console.log(b);
 ```
 
-### JavaScript 的「物件」導向
+React.js 開發可用的 immutable array：
+
+```js
+var array = [
+  {
+    name: "A",
+  },
+  {
+    name: "B",
+  },
+];
+
+var index = 1;
+var newArray = Object.assign(array, { [index]: { name: "C" } });
+
+console.log(array); // [{ name: "A" }, { name: "B" }]
+console.log(newArray); // [{ name: "A" }, { name: "C" }]
+```
+
+## JavaScript 的「物件」導向
 
 由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
+
+<!-- TODO -->
+
+### Computed Property
+
+### 深拷貝 vs 淺拷貝
+
+### Object.defineProperty()
+
+### instanceof
+
+### isPrototypeOf
+
+### Object.defineProperty() 舉例 in
+
+### Object.create()
+
+<!-- Move to the prototypes' chapter -->
 
 ## 原型 （Prototypes）
 
@@ -109,19 +146,3 @@ for (prop in person) console.log(prop); // name sayHi
 // 所以當 person 找不到 sayHi 時，就會沿著 __proto__ 到 Person 的原型查看
 console.log(person.sayHi === person.__proto__.sayHi); // true
 ```
-
-<!-- TODO -->
-
-### Computed Property
-
-### 深拷貝 vs 淺拷貝
-
-### Object.defineProperty()
-
-### instanceof
-
-### isPrototypeOf
-
-### Object.defineProperty() 舉例 in
-
-### Object.create()
