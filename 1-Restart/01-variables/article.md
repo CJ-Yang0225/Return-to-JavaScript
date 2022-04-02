@@ -80,7 +80,7 @@ const b = "i am const";
 
 ## 作用域（Scope）的例子
 
-`var` 不具備區塊作用域（Block Scope），如果不在 `function` 之中會引發無窮麻煩。
+`var` 不具備區塊作用域（Block Scope），如果不在 `function` 之中會引發奇怪事情。
 
 像是著名的例子：
 
@@ -120,7 +120,7 @@ for (let i = 0; i < 5; i++) {
 
 解法二：
 
-通常提到這個例子真正想知道的答案，利用 IIFE 的函式作用域（Function Scope）
+通常提到這個例子真正想要的答案，利用 IIFE 的函式作用域（Function Scope）
 
 ```js
 for (var i = 0; i < 5; i++) {
@@ -142,8 +142,7 @@ for (var i = 0; i < 5; i++) {
 4
 ```
 
-## 參考
+### 參考
 
 - [我知道你懂 hoisting，可是你了解到多深？](https://blog.techbridge.cc/2018/11/10/javascript-hoisting/)
-- [理解 ES6 中的暫時死區(TDZ)
-  ](https://eddychang.me/es6-tdz)
+- [理解 ES6 中的暫時死區(TDZ)](https://eddychang.me/es6-tdz)
