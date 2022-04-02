@@ -77,7 +77,7 @@ console.log(n);
 
 ## **複合（Composite）** 型別
 
-### 物件（Object）：萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
+### 物件（Object）：JS 萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
 
 - Array — 陣列，透過陣列實字（literal）的 `[]` 或 `new Array()` 建立
 - Function — 函式，可以呼叫的物件（Callable Object）
@@ -101,3 +101,7 @@ typeof {}; // "object"
 typeof []; // "object"
 typeof function () {}; // "function"，ECMA-262 所定義
 ```
+
+### 參考
+
+[靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
