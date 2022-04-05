@@ -146,3 +146,9 @@ for (prop in person) console.log(prop); // name sayHi
 // 所以當 person 找不到 sayHi 時，就會沿著 __proto__ 到 Person 的原型查看
 console.log(person.sayHi === person.__proto__.sayHi); // true
 ```
+
+### 參考
+
+[MDN - Object initializer](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Object_initializer)
+
+[JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/#object)
