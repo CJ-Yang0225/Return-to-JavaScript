@@ -1,6 +1,6 @@
 # 型別（Types）
 
-JavaScript 是一門動態型別又是弱型別的語言，比其他語言較為寬鬆，所以起手快速、入門容易，但也隱含了許多特性和陷阱。
+JavaScript 是一門動態型別又是弱型別的語言，比其他語言較為寬鬆，所以起手快速、入門容易，但也隱藏了許多特性和陷阱。
 
 ## 如何區分**靜態**與**動態**？
 
@@ -102,6 +102,101 @@ typeof []; // "object"
 typeof function () {}; // "function"，ECMA-262 所定義
 ```
 
+## 類型轉換 & `valueOf()` & `toString()`
+
+如何讓這個判斷時成功執行，印出 success：
+
+```js
+if (a == 1 && a == 2 && a == 3) {
+  console.log("success!");
+}
+```
+
+關鍵在於思考如何讓 `a` 在隨著判斷推移改變其值，而 `==` 會觸發隱含轉型（Implicit Coercion），因此可以透過改寫隱含轉型所用到的函式來達成：
+
+```js
+var a = {
+  _current: 0,
+  valueOf: function () {
+    return ++this._current;
+  },
+  toString: function () {
+    console.log("nothing happens");
+  },
+};
+
+if (a == 1 && a == 2 && a == 3) {
+  console.log("success!");
+}
+```
+
+- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值非原始（Primitive）型別，才會再執行 `toString()`
+- object 若**沒有**定義 `valueOf()` 則會以 `toString` 為優先使用
+
+假如是 `===` 的情況：
+
+```js
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
+因為物件 `a` 已經不會觸發隱含轉型了，所以改用 `getter()` 的概念來實現，那麼重點是如何用物件 `a` 的同時發動 `getter()`，顯然在物件 `a` 裡面直接寫入 `getter()` 無法達到題目想要的效果。
+
+除非更改題目的判斷：
+
+```js
+var a = {
+  _current: 0,
+  get a() {
+    return ++this._current;
+  },
+};
+
+// 只能改變題目
+if (a.a === 1 && a.a === 2 && a.a === 3) {
+  console.log("success!");
+}
+```
+
+於是想到在瀏覽器的全域（global）就是物件 Window，在全域裡宣告的 `var` 變數都會存入 `window` 其中，由此可對 `window` 寫入 `getter()` 以達成目標，但是 `window` 不能用一般方式寫入。
+
+以下 `get a()` 會失效，`window` 無法直接改寫：
+
+```js
+window = {
+  ...window,
+  _current: 0,
+  get a() {
+    return ++this._current;
+  },
+};
+
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
+解決方式是利用 `Object.defineProperty()`：
+
+```js
+var _current = 0;
+
+Object.defineProperty(window, "a", {
+  get: function () {
+    return ++this._current;
+  },
+});
+
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
 ### 參考
 
 [靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
+
+[你懂 JavaScript 嗎？#8 強制轉型（Coercion）](https://cythilya.github.io/2018/10/15/coercion/)
+
+[MDN - getter](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Functions/get)
