@@ -78,7 +78,7 @@ var array = [
 ];
 
 var index = 1;
-var newArray = Object.assign(array, { [index]: { name: "C" } });
+var newArray = Object.assign([...array], { [index]: { name: "C" } });
 
 console.log(array); // [{ name: "A" }, { name: "B" }]
 console.log(newArray); // [{ name: "A" }, { name: "C" }]
@@ -90,7 +90,8 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 
 <!-- TODO -->
 
-### Computed Property
+
+<!-- ### Computed Property
 
 ### 深拷貝 vs 淺拷貝
 
@@ -102,7 +103,7 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 
 ### Object.defineProperty() 舉例 in
 
-### Object.create()
+### Object.create() -->
 
 <!-- Move to the prototypes' chapter -->
 
