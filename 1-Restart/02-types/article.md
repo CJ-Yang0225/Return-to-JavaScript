@@ -115,6 +115,7 @@ if (a == 1 && a == 2 && a == 3) {
 關鍵在於思考如何讓 `a` 在隨著判斷推移改變其值，而 `==` 會觸發隱含轉型（Implicit Coercion），因此可以透過改寫隱含轉型所用到的函式來達成：
 
 ```js
+// =====================================
 var a = {
   _current: 0,
   valueOf: function () {
@@ -124,14 +125,15 @@ var a = {
     console.log("nothing happens");
   },
 };
+// =====================================
 
 if (a == 1 && a == 2 && a == 3) {
   console.log("success!");
 }
 ```
 
-- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值非原始（Primitive）型別，才會再執行 `toString()`
-- object 若**沒有**定義 `valueOf()` 則會以 `toString` 為優先使用
+- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值**非**原始（Primitive）型別，才會再執行 `toString()`
+- object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
 
 假如是 `===` 的情況：
 
@@ -146,12 +148,14 @@ if (a === 1 && a === 2 && a === 3) {
 除非更改題目的判斷：
 
 ```js
+// =====================================
 var a = {
   _current: 0,
   get a() {
     return ++this._current;
   },
 };
+// =====================================
 
 // 只能改變題目
 if (a.a === 1 && a.a === 2 && a.a === 3) {
@@ -164,6 +168,7 @@ if (a.a === 1 && a.a === 2 && a.a === 3) {
 以下 `get a()` 會失效，`window` 無法直接改寫：
 
 ```js
+// =====================================
 window = {
   ...window,
   _current: 0,
@@ -171,6 +176,7 @@ window = {
     return ++this._current;
   },
 };
+// =====================================
 
 if (a === 1 && a === 2 && a === 3) {
   console.log("success!");
@@ -180,6 +186,7 @@ if (a === 1 && a === 2 && a === 3) {
 解決方式是利用 `Object.defineProperty()`：
 
 ```js
+// =====================================
 var _current = 0;
 
 Object.defineProperty(window, "a", {
@@ -187,6 +194,7 @@ Object.defineProperty(window, "a", {
     return ++this._current;
   },
 });
+// =====================================
 
 if (a === 1 && a === 2 && a === 3) {
   console.log("success!");
