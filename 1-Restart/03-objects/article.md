@@ -90,7 +90,6 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 
 <!-- TODO -->
 
-
 <!-- ### Computed Property
 
 ### 深拷貝 vs 淺拷貝
@@ -112,6 +111,8 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
 
 雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以連結到它，像是 `__proto__`（getter & setter） 或較正式的 `Object.getPrototypeOf()`；而函式建構式（function constructor）的原型可由該建構式的 `prototype` 來存取。
+
+![Prototype layout](../../assets/images/prototype-layout.jpg)
 
 ```js
 // Function Constructor
