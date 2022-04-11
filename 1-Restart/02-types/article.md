@@ -73,7 +73,7 @@ console.log(n);
 
 - Symbol — 用於表示獨一無二的值。實務上很少使用，因為不支援舊瀏覽器。宣告不需要 `new`，ex: `Symbol("id")`
 
-- BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，ex: `10n`, `BigInt(10)`
+- BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，宣告不需要 `new`，ex: `10n`, `BigInt(10)`
 
 ## **複合（Composite）** 型別
 
