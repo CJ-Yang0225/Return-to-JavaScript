@@ -75,7 +75,7 @@ console.log(n);
 
 - BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，宣告不需要 `new`，ex: `10n`, `BigInt(10)`
 
-## **複合（Composite）** 型別
+## **參考（Reference）** 型別
 
 ### 物件（Object）：JS 萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
 
