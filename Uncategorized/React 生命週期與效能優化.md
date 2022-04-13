@@ -45,4 +45,5 @@ const dispense = (candy) => {
 };
 ```
 
-也許有時候保持原樣更好，或是採用這篇文章 - [Before You memo()](https://overreacted.io/zh-hant/before-you-memo/) 的 `children` 概念。
+也許有時候保持原樣更好，或是採用這篇文章的 `children` 概念。
+[Before You memo()](https://overreacted.io/zh-hant/before-you-memo/)
