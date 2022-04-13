@@ -12,21 +12,40 @@ JavaScript 中，建立變數可以使用 `var`、`let` 或 `const`關鍵字（�
 
 ## 宣告（declaration） 與 定義（definition）
 
+JavaScript 引擎將記憶體劃分為兩個區塊：
+
+- 程式碼空間
+- Stack & Heap（資料空間）
+
+一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下皆以儲存到 Stack & Heap 來描述。
+
 ```js
 var name; // 宣告變數
 name = "who?"; // 定義變數
+```
 
-var name = "CJ-Yang"; // 宣告＋定義變數
+```js
+var name = "CJ-Yang"; // 宣告並定義變數
 ```
 
 `var name = "CJ-Yang";` 主要分成以下兩步驟
 
 ```js
-// 第一步：宣告一個名為 name 的變數
+// 第一步：宣告一個名為 name 的變數，將 name 儲存到程式碼空間的記憶體
 var name;
 
-// 第二步：建立字串資料"CJ-Yang"，然後將其賦值給 name 變數，最後定義 name 變數的值並儲存到記憶體
+// 第二步：先尋找 "CJ-Yang" 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦予 name 變數
 name = "CJ-Yang";
+```
+
+假如過程中修改了變數的值：
+
+```js
+var name = "CJ-Yang";
+
+// 先尋找 "New name"，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值給 name 變數，
+// 但原本的字串 "CJ-Yang" 仍然存在，所以這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
+name = "New name";
 ```
 
 ## 提升（Hoisting）
@@ -144,5 +163,10 @@ for (var i = 0; i < 5; i++) {
 
 ### 參考
 
+- [Day26 X Memory Management In JavaScript](https://ithelp.ithome.com.tw/articles/10280288?sc=rss.iron)
+
+- [前端小誌(轉型中) - Javascript memory in use](https://ernieyang09.github.io/posts/javascript-memory/)
+
 - [我知道你懂 hoisting，可是你了解到多深？](https://blog.techbridge.cc/2018/11/10/javascript-hoisting/)
+
 - [理解 ES6 中的暫時死區(TDZ)](https://eddychang.me/es6-tdz)
