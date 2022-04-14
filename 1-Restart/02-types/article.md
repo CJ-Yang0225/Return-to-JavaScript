@@ -33,7 +33,7 @@ System.out.print(n);
 error: incompatible types: String cannot be converted to int
 ```
 
-需要透過顯性轉型（Explicitly Casting）：
+Java 需要透過顯性轉型（Explicitly Casting）：
 
 ```java
 int n = 123 + Integer.parseInt("456");
@@ -59,6 +59,64 @@ console.log(n);
 > "123456"
 ```
 
+## JavaScript 之 強制轉型（Coercion）
+
+JS 的強制轉型分為兩種：
+
+- 「明確的」強制轉型 **Explicit** Coercion
+
+以 `Number()` 和 `parseInt()` 為例：
+
+```js
+// string (唯一 Number 比 parseInt 嚴格)
+Number("1asd"); // NaN
+parseInt("1asd"); // 1
+
+// boolean
+Number(true); // 1
+parseInt(true); // NaN
+
+// null
+Number(null); // 0
+parseInt(null); // NaN
+
+// undefined (兩者相同)
+Number(undefined); // NaN
+parseInt(undefined); // NaN
+
+// -------
+
+// array
+/*
+ * Array.prototype 沒有 valueOf()，但有 toString()
+ * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => "1, 2, 3"
+ * 若是空字串，[].toString() => ""
+ */
+Number([]); // 0
+parseInt([]); // NaN
+
+// object
+/*
+ * Object.prototype 有 valueOf()，也有 toString()
+ * 優先使用 valueOf()，如果返回的值不是 Primitive，則再用 toString()
+ */
+Number({}); // NaN
+parseInt({}); // NaN
+```
+
+- 「隱含的」強制轉型 **Implicit** Coercion
+
+以 `for` 迴圈的條件判斷為例：
+
+```js
+var i = 10;
+
+// Number 轉為 Boolean 再做判斷，數字 0 => false，所以不進到迴圈內
+for (; i; ) {
+  console.log(i--); // 10 9 8 7 6 5 4 3 2 1
+}
+```
+
 ## **原始（Primitive）** 型別
 
 - Number — 包含整數、浮點數、Infinity、-Infinity 和 NaN（Not a Number）
@@ -69,7 +127,7 @@ console.log(n);
 
 - Null — 特殊值，代表過去可能有值，但是現在沒有（無、空值、未知）
 
-- Undefined — 特殊值，代表未賦予值，未宣告（undeclared）變數時也會 `undefined` ，但意義不同。
+- Undefined — 特殊值，代表未賦予值，和未宣告（undeclared）變數時會得到的 `ReferenceError` 意義不同。ex: `var a; // undefined`
 
 - Symbol — 用於表示獨一無二的值。實務上很少使用，因為不支援舊瀏覽器。宣告不需要 `new`，ex: `Symbol("id")`
 
@@ -91,18 +149,18 @@ console.log(n);
 可以回傳參數的型別，在處理個別型別或快速檢查資料等等，很有幫助。
 
 ```js
-typeof undeclared; // "undefined"，變數未宣告
 typeof 123; // "number"
 typeof "123"; // "string"
 typeof true; // "boolean"
-typeof null; // "object"，bug，但為了兼容過去，沒有修復
+typeof null; // "object"  bug，但為了兼容過去，沒有修復
 typeof undefined; // "undefined"
+typeof undeclared; // "undefined"  變數未宣告卻直接使用會出現 ReferenceError，但 typeof 會出現 "undefined"，可以用來檢查變數是否宣告
 typeof {}; // "object"
 typeof []; // "object"
-typeof function () {}; // "function"，ECMA-262 所定義
+typeof function () {}; // "function"  ECMA-262 所定義
 ```
 
-## 類型轉換 & `valueOf()` & `toString()`
+## `valueOf()` & `toString()`
 
 如何讓這個判斷時成功執行，印出 success：
 
