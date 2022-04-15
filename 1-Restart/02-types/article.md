@@ -68,9 +68,11 @@ JS 的強制轉型分為兩種：
 以 `Number()` 和 `parseInt()` 為例：
 
 ```js
-// string (唯一 Number 比 parseInt 嚴格)
+// string
 Number("1asd"); // NaN
 parseInt("1asd"); // 1
+Number("12.3e1"); // 123  12.3 * 10^1
+parseInt("12.3e1"); // 12
 
 // boolean
 Number(true); // 1
@@ -80,7 +82,7 @@ parseInt(true); // NaN
 Number(null); // 0
 parseInt(null); // NaN
 
-// undefined (兩者相同)
+// undefined
 Number(undefined); // NaN
 parseInt(undefined); // NaN
 
@@ -115,6 +117,20 @@ var i = 10;
 for (; i; ) {
   console.log(i--); // 10 9 8 7 6 5 4 3 2 1
 }
+```
+
+以 `undefined` 和 `null` 為例：
+
+```js
+console.log(undefined >= 0); // false  相當於 +undefined 所以是 NaN >= 0
+console.log(undefined <= 0); // false
+console.log(undefined == 0); // false  特殊，ECMA-262 演算法推算
+
+console.log(null >= 0); // true  相當於 +null 所以是 0 >= 0
+console.log(null <= 0); // true
+console.log(null == 0); // false  特殊，ECMA-262 演算法推算
+
+console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 ```
 
 ## **原始（Primitive）** 型別
@@ -157,7 +173,7 @@ typeof undefined; // "undefined"
 typeof undeclared; // "undefined"  變數未宣告卻直接使用會出現 ReferenceError，但 typeof 會出現 "undefined"，可以用來檢查變數是否宣告
 typeof {}; // "object"
 typeof []; // "object"
-typeof function () {}; // "function"  ECMA-262 所定義
+typeof function () {}; // "function"  ECMA-262 特別定義
 ```
 
 ## `valueOf()` & `toString()`
@@ -173,7 +189,7 @@ if (a == 1 && a == 2 && a == 3) {
 關鍵在於思考如何讓 `a` 在隨著判斷推移改變其值，而 `==` 會觸發隱含轉型（Implicit Coercion），因此可以透過改寫隱含轉型所用到的函式來達成：
 
 ```js
-// =====================================
+// ==============修改此處===============
 var a = {
   _current: 0,
   valueOf: function () {
@@ -183,7 +199,7 @@ var a = {
     console.log("nothing happens");
   },
 };
-// =====================================
+// ====================================
 
 if (a == 1 && a == 2 && a == 3) {
   console.log("success!");
@@ -206,14 +222,14 @@ if (a === 1 && a === 2 && a === 3) {
 除非更改題目的判斷：
 
 ```js
-// =====================================
+// ==============修改此處===============
 var a = {
   _current: 0,
   get a() {
     return ++this._current;
   },
 };
-// =====================================
+// ====================================
 
 // 只能改變題目
 if (a.a === 1 && a.a === 2 && a.a === 3) {
@@ -226,7 +242,7 @@ if (a.a === 1 && a.a === 2 && a.a === 3) {
 以下 `get a()` 會失效，`window` 無法直接改寫：
 
 ```js
-// =====================================
+// ==============修改此處===============
 window = {
   ...window,
   _current: 0,
@@ -234,7 +250,7 @@ window = {
     return ++this._current;
   },
 };
-// =====================================
+// ====================================
 
 if (a === 1 && a === 2 && a === 3) {
   console.log("success!");
@@ -244,7 +260,7 @@ if (a === 1 && a === 2 && a === 3) {
 解決方式是利用 `Object.defineProperty()`：
 
 ```js
-// =====================================
+// ==============修改此處===============
 var _current = 0;
 
 Object.defineProperty(window, "a", {
@@ -252,7 +268,7 @@ Object.defineProperty(window, "a", {
     return ++this._current;
   },
 });
-// =====================================
+// ====================================
 
 if (a === 1 && a === 2 && a === 3) {
   console.log("success!");
