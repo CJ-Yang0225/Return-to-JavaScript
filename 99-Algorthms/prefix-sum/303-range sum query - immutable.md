@@ -112,6 +112,40 @@ NumArray.prototype.sumRange = function (left, right) {
 };
 ```
 
+延伸 - 計算有多少人的分數在區間之中
+
+```js
+class Grades {
+  constructor(grades) {
+    const prefix = new Array(100 + 1).fill(0);
+    this._prefix = prefix;
+
+    for (let grade of grades) {
+      prefix[grade]++;
+    }
+
+    for (let i = 1; i < prefix.length; i++) {
+      prefix[i] = prefix[i - 1] + prefix[i];
+    }
+  }
+
+  countBetween(start, end) {
+    start = start - 1 >= 0 ? start - 1 : 0;
+
+    return this._prefix[end] - this._prefix[start];
+  }
+}
+
+var failed = [0, 58];
+var passed = [60, 90, 85, 99];
+var gradeList = [].concat(failed, passed);
+
+var grades = new Grades(gradeList);
+
+console.log(grades.countBetween(60, 100));
+console.log(grades.countBetween(0, 59));
+```
+
 ---
 
 [參考](https://leetcode-cn.com/problems/range-sum-query-immutable/solution/jian-dan-wen-ti-xi-zhi-fen-xi-qian-tan-q-t2nz/)
