@@ -132,18 +132,28 @@ class Grades {
   countBetween(start, end) {
     start = start - 1 >= 0 ? start - 1 : 0;
 
-    return this._prefix[end] - this._prefix[start];
+    if (start > end) {
+      // swap
+      start = start + end;
+      end = start - end;
+      start = start - end;
+    }
+
+    if (start === 0 && this._prefix[start] !== 0) {
+      return this._prefix[end] - 0;
+    } else {
+      return this._prefix[end] - this._prefix[start];
+    }
   }
 }
 
 var failed = [0, 58];
 var passed = [60, 90, 85, 99];
-var gradeList = [].concat(failed, passed);
+var gradeList = [...failed, ...passed];
 
 var grades = new Grades(gradeList);
-
-console.log(grades.countBetween(60, 100));
 console.log(grades.countBetween(0, 59));
+console.log(grades.countBetween(60, 100));
 ```
 
 ---
