@@ -17,24 +17,26 @@ JavaScript 引擎將記憶體劃分為兩個區塊：
 - 程式碼空間
 - Stack & Heap（資料空間）
 
-一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下皆以儲存到 Stack & Heap 來描述。
+一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下以「儲存到 Stack & Heap 」來描述。
+
+簡單的例子：
 
 ```js
-var name; // 宣告變數
-name = "who?"; // 定義變數
+var name; // 宣告變數： 預設的初始化（initialization）為 undefined
+name = "who?"; // 定義變數： 將 "who" 賦值 （assign）到變數中
 ```
 
 ```js
-var name = "CJ-Yang"; // 宣告並定義變數
+var name = "CJ-Yang"; // 宣告並定義變數： 初始化為 "CJ-Yang"，然後賦值到變數中
 ```
 
-`var name = "CJ-Yang";` 主要分成以下兩步驟
+較完整的例子主要分成兩步驟：
 
 ```js
 // 第一步：宣告一個名為 name 的變數，將 name 儲存到程式碼空間的記憶體
 var name;
 
-// 第二步：先尋找 "CJ-Yang" 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦予 name 變數
+// 第二步：先尋找 "CJ-Yang" 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦值到 name 變數
 name = "CJ-Yang";
 ```
 
@@ -43,7 +45,7 @@ name = "CJ-Yang";
 ```js
 var name = "CJ-Yang";
 
-// 先尋找 "New name"，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值給 name 變數，
+// 先尋找 "New name"，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值到 name 變數，
 // 但原本的字串 "CJ-Yang" 仍然存在，所以這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
 name = "New name";
 ```
@@ -77,14 +79,29 @@ console.log(a); // undefined
 a = "123";
 ```
 
-那麼 `let` 和 `const` 也會 Hoist 嗎？
+那麼 `let` 和 `const` 也會 Hoisting 嗎？
+
+let:
 
 ```js
-console.log(a); // ReferenceError: a is not defined
-console.log(b); // ReferenceError: b is not defined
+var a = "parent 'a'";
 
-let a = "i am let";
-const b = "i am const";
+(function () {
+  console.log(a); // Uncaught ReferenceError: Cannot access 'a' before initialization
+  let a = "child 'a'";
+})();
+```
+
+const:
+
+```js
+var b = "parent 'b'";
+
+(function () {
+  console.log(b); // Uncaught ReferenceError: Cannot access 'b' before initialization
+
+  let b = "child 'b'";
+})();
 ```
 
 乍看之下 `let`/`const` 沒有被提升，不過根據 ES6 標準中的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)指到：
@@ -95,7 +112,7 @@ const b = "i am const";
 
 說明當新的作用域（Lexical Environment）實體化後，在此作用域中使用 `let`/`const` 宣告的變數也會先被建立，但是變數未經過詞法綁定（LexicalBinding），所以被存取時就會拋出錯誤訊息。這段執行流程進入作用域建立變數，到變數可以開始被存取的一段時間，稱之為暫時死區（Temporal Dead Zone）。
 
-由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoist，只是 `var` 得到 `undefined`，而 `let`/`const` 是在執行前拋出錯誤。
+由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoisting，只是 `var` 得到 `undefined`，而 `let`/`const` 是在執行前拋出錯誤。
 
 ## 作用域（Scope）的例子
 
