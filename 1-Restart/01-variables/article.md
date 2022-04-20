@@ -12,14 +12,7 @@ JavaScript 中，建立變數可以使用 `var`、`let` 或 `const`關鍵字（�
 
 ## 宣告（declaration） 與 定義（definition）
 
-JavaScript 引擎將記憶體劃分為兩個區塊：
-
-- 程式碼空間
-- Stack & Heap（資料空間）
-
-一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下以「儲存到 Stack & Heap 」來描述。
-
-簡單的例子：
+簡單來說：
 
 ```js
 var name; // 宣告變數： 預設的初始化（initialization）為 undefined
@@ -29,6 +22,13 @@ name = "who?"; // 定義變數： 將 "who" 賦值 （assign）到變數中
 ```js
 var name = "CJ-Yang"; // 宣告並定義變數： 初始化為 "CJ-Yang"，然後賦值到變數中
 ```
+
+背後 JavaScript 引擎將記憶體劃分為兩個區塊：
+
+- 程式碼空間
+- Stack & Heap（資料空間）
+
+一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下以「儲存到 Stack & Heap 」來描述。
 
 較完整的例子主要分成兩步驟：
 
@@ -54,7 +54,7 @@ name = "New name";
 
 JavaScript 是會進行編譯（Compiled）的，所以才有 Hoisting，簡單來說它會先解析程式碼，然後把宣告的變數提升至上面。
 
-因此當我們想用保留字作為變數來宣告時，它會在執行前就報錯。
+因此當我們想用保留字作為變數來宣告時，它會在執行前就報錯：
 
 ```js
 // 報錯，null 是一個保留字（Reserved Keyword）
@@ -79,7 +79,47 @@ console.log(a); // undefined
 a = "123";
 ```
 
-那麼 `let` 和 `const` 也會 Hoisting 嗎？
+另一個例子：
+
+```js
+(function () {
+  a = 5;
+  console.log(window.a);
+  var a = 10;
+  console.log(a);
+})();
+```
+
+.
+
+.
+
+.
+
+.
+
+.
+
+印出：
+
+```sh
+undefined
+10
+```
+
+可以想像為：
+
+```js
+(function () {
+  var a;
+  a = 5;
+  console.log(window.a);
+  a = 10;
+  console.log(a);
+})();
+```
+
+### 那麼 `let` 和 `const` 也會 Hoisting 嗎？
 
 let:
 
