@@ -1,14 +1,14 @@
 # 變數（Variables）
 
-變數可以對資料做"命名儲存（named storage）"。像使用者名稱、商品資訊或廠商地址等等。
+變數可以對資料做「命名儲存（named storage）」。像使用者名稱、商品資訊或廠商地址等等。
 
-JavaScript 中，建立變數可以使用 `var`、`let` 或 `const`關鍵字（它們之間有些微不同）。
+在 JavaScript 中，建立變數可以使用 `var`、`let` 或 `const` 關鍵字（它們之間有些微不同）。
 
 - `var` — 傳統的變數宣告方式，它有幾種特性：不具備區塊作用域（Block Scope）、變數會提升（Hoisting）、變數可重複宣告和允許值任意更換。
 
-- `let` — 現代的變數宣告方式，較 `var` 嚴謹，允許值任意更換。
+- `let` — 現代的變數宣告方式，較 `var` 嚴謹，允許值任意更換。[有 Hoisting！？](#那麼-let-和-const-也會-hoisting-嗎)
 
-- `const` — 類似 `let`，但是值無法更改（物件與陣列的值除外）
+- `const` — 類似 `let`，但是值無法更改（物件與陣列的值除外）。[有 Hoisting！？](#那麼-let-和-const-也會-hoisting-嗎)
 
 ## 宣告（declaration） 與 定義（definition）
 
@@ -121,7 +121,7 @@ undefined
 
 ### 那麼 `let` 和 `const` 也會 Hoisting 嗎？
 
-let:
+`let`:
 
 ```js
 var a = "parent 'a'";
@@ -132,7 +132,7 @@ var a = "parent 'a'";
 })();
 ```
 
-const:
+`const`:
 
 ```js
 var b = "parent 'b'";
@@ -144,7 +144,9 @@ var b = "parent 'b'";
 })();
 ```
 
-乍看之下 `let`/`const` 沒有被提升，不過根據 ES6 標準中的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)指到：
+乍看之下 `let`/`const` 沒有被提升，但如果沒有被提升，不是應該印出全域的變數嗎？
+
+可以看到 ES6 標準中的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)提到：
 
 > The variables are created when their containing Lexical Environment
 > is instantiated but may not be accessed in any way until the
@@ -167,7 +169,7 @@ for (var i = 0; i < 5; i++) {
   }, i * 1000);
 }
 
-console.log("outside:", i); // 穿透出迴圈，影響全域
+console.log("outside:", i); // 穿透出迴圈區塊，影響全域
 ```
 
 執行結果：
@@ -220,7 +222,7 @@ for (var i = 0; i < 5; i++) {
 
 ### 參考
 
-- [Day26 X Memory Management In JavaScript](https://ithelp.ithome.com.tw/articles/10280288?sc=rss.iron)
+- [身為 JS 開發者，你應該要知道的記憶體管理機制](https://medium.com/starbugs/%E8%BA%AB%E7%82%BA-js-%E9%96%8B%E7%99%BC%E8%80%85-%E4%BD%A0%E4%B8%8D%E8%83%BD%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84%E8%A8%98%E6%86%B6%E9%AB%94%E7%AE%A1%E7%90%86%E6%A9%9F%E5%88%B6-d9db2fd66f8)
 
 - [前端小誌(轉型中) - Javascript memory in use](https://ernieyang09.github.io/posts/javascript-memory/)
 

@@ -1,11 +1,5 @@
 # React 生命週期與效能優化
 
-## 參考
-
-- [useEffect vs useLayoutEffect](https://kentcdodds.com/blog/useeffect-vs-uselayouteffect)
-- [When to useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
-- [Before You memo()](https://overreacted.io/zh-hant/before-you-memo/)
-
 ## 記錄
 
 ### useEffect vs useLayoutEffect 生命週期
@@ -14,7 +8,7 @@
 
 調用 Function（元件）-> 初始化元件內的 hooks（`useState`、`useRef` 等等） -> 更新 DOM 節點 -> 渲染瀏覽器的畫面，然後才會執行 `useEffect`，因此 `useState` 初始化的資料先被渲染到了畫面上，之後又在 `useEffect` 裡 setState 而重新渲染，導致不協調感。
 
-`useLayoutEffect` 雖然很少使用，不過它可以達到一些 `useEffect` 做不到的事，因為它會在 DOM 變動之後立即被觸發，所以可以在瀏覽器還沒把 DOM 繪製到畫面之前處理東西。
+`useLayoutEffect` 雖然很少使用，不過它可以完成一些 `useEffect` 做不到的事，因為它會在 DOM 變動之後立即被觸發，所以可以在瀏覽器還沒把 DOM 繪製到畫面之前處理東西。
 
 ### 優化
 
@@ -45,5 +39,13 @@ const dispense = (candy) => {
 };
 ```
 
-也許有時候保持原樣更好，或是採用這篇文章的 `children` 概念。
+也許有時候保持原樣更好，或是採用 Dan Abramov 文章的 `children` 概念。
 [Before You memo()](https://overreacted.io/zh-hant/before-you-memo/)
+
+---
+
+## 參考
+
+- [useEffect vs useLayoutEffect](https://kentcdodds.com/blog/useeffect-vs-uselayouteffect)
+- [When to useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
+- [Before You memo()](https://overreacted.io/zh-hant/before-you-memo/)

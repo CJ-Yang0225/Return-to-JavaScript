@@ -84,10 +84,6 @@ console.log(array); // [{ name: "A" }, { name: "B" }]
 console.log(newArray); // [{ name: "A" }, { name: "C" }]
 ```
 
-## JavaScript 的「物件」導向
-
-由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
-
 <!-- TODO -->
 
 <!-- ### Computed Property
@@ -105,6 +101,10 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 ### Object.create() -->
 
 <!-- Move to the prototypes' chapter -->
+
+## JavaScript 的「物件」導向
+
+由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
 
 ## 原型 （Prototypes）
 
