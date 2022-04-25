@@ -176,6 +176,18 @@ typeof []; // "object"
 typeof function () {}; // "function"  ECMA-262 特別定義
 ```
 
+有趣的小測驗：
+
+```js
+console.log(typeof a && -true + +undefined + "");
+
+console.log(!!" " + !!"" + "false" || "會印出什麼？");
+console.log(!!" " + !!"" - "false" || "這樣會印出什麼？");
+
+// 有陷阱，() 最優先，所以先判斷
+console.lop(window.a || (window.a = "A_A"));
+```
+
 ## `valueOf()` & `toString()`
 
 如何讓這個判斷時成功執行，印出 success：
