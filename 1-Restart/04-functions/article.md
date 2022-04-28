@@ -329,6 +329,48 @@ undefined
 5
 ```
 
+## 立即執行函式（IIFEs, Immediately Invoked Functions Expressions）
+
+- 自動執行並在完成後銷毀、釋放記憶體（一般函式宣告會保存在 GO 中）
+
+```js
+(function () {
+  console.log("IIFE 01");
+})();
+
+(function () {
+  console.log("IIFE 02");
+})();
+```
+
+```js
+var test1 = (function () {
+  console.log("只有表達是（express）才能執行（invoke）");
+})();
+
+// function test2() {}() //Uncaught SyntaxError: Unexpected token ')'
+```
+
+除了用小括號 `()`（parentheses），還有什麼方法可以讓函式宣告變成表達式呢？：
+
+```js
+// 只要轉換為表達式，那麼函式的名稱則會無效
+false ||
+  function test2() {
+    console.log("在 function 前加上 + - ! || && 就能做到");
+  }();
+
+test2(); // Uncaught ReferenceError: test2 is not defined
+```
+
+特別的方式 - 傳了引數，JS 引擎認為 `(123)` 是表達式：
+
+```js
+function test3(a) {
+  console.log("(123) 是表達式，() 語法錯誤");
+}(123)
+```
+
 ## 閉包（Closure）
 
 當「主函式」執行，它的「內部函式」被回傳到外部並保存時，一定會產生閉包（Closure ），而這個「內部函式」的作用域鏈（Scope Chain）仍會保存「主函式」的 AO （Activation Object），當「內部函式」執行，則會產生它自己的 AO 並放在作用域鏈的最頂端，其他 AO 和 GO 向後依序排列。過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
