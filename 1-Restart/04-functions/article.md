@@ -93,7 +93,7 @@ caller();
 
 - 「當全域執行的前一刻」會產生 GO（Global Object）。
 
-- 「當函式被定義時」會產生函式的作用域 `[[scope]]`，它的作用域中保存了作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會指向全域的 GO（Global Object）。
+- 「當函式被定義時」會產生函式的作用域 `[[scope]]`，它的作用域 `[[scope]]` 中保存了作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會指向全域的 GO（Global Object）。
 
 - 「當函式被執行的前一刻」會建立該函式的 AO（Activation Object），這時作用域鏈的第 `0` 位（最頂端）會被 AO 取代，然後 GO（或是其他 context）變為第 `1` 位，所以變數會先從 AO 尋找，然後依序查找到 GO。
 
@@ -329,7 +329,7 @@ undefined
 5
 ```
 
-## 立即執行函式（IIFEs, Immediately Invoked Functions Expressions）
+### 立即執行函式（IIFEs, Immediately Invoked Functions Expressions）
 
 - 自動執行並在完成後銷毀、釋放記憶體（一般函式宣告會保存在 GO 中）
 
@@ -354,7 +354,7 @@ var test1 = (function () {
 除了用小括號 `()`（parentheses），還有什麼方法可以讓函式宣告變成表達式呢？：
 
 ```js
-// 只要轉換為表達式，那麼函式的名稱則會無效
+// 只要轉換為表達式，那麼函式的名稱（宣告）則會無效
 false ||
   function test2() {
     console.log("在 function 前加上 + - ! || && 就能做到");
@@ -370,6 +370,33 @@ function test3(a) {
   console.log("(123) 是表達式，() 語法錯誤");
 }(123)
 ```
+
+IIFE 的面試題：
+
+```js
+var a = 123;
+if (function b() {}) {  // 注意： (function b() {})
+  a += typeof b;
+}
+
+console.log(a);
+```
+
+.
+
+.
+
+.
+
+.
+
+.
+
+```bash
+"123undefined"
+```
+
+函式不是 falsy，會進到 `if` 裡，但函式被 `()` 刮起來，變為表達式，因此函式的名稱（宣告）也就無效了，最終 `typeof` 回傳 `"undefined"` 加到 `123` 後面。
 
 ## 閉包（Closure）
 
