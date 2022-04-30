@@ -140,13 +140,13 @@ var b = "parent 'b'";
 (function () {
   console.log(b); // Uncaught ReferenceError: Cannot access 'b' before initialization
 
-  let b = "child 'b'";
+  const b = "child 'b'";
 })();
 ```
 
 乍看之下 `let`/`const` 沒有被提升，但如果沒有被提升，不是應該印出全域的變數嗎？
 
-可以看到 ES6 標準中的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)提到：
+除此之外，可以看到 ES6 標準的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)提到：
 
 > The variables are created when their containing Lexical Environment
 > is instantiated but may not be accessed in any way until the
@@ -156,9 +156,11 @@ var b = "parent 'b'";
 
 由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoisting，只是 `var` 得到 `undefined`，而 `let`/`const` 是在執行前拋出錯誤。
 
-## 作用域（Scope）的例子
+## `var` 和 `let` 在不同作用域（Scope）下的影響
 
-`var` 不具備區塊作用域（Block Scope），如果不在 `function` 之中會引發奇怪事情。
+簡單的函式作用域例子（更詳細的筆記在 [04 - Functions 章節](../04-functions/article.md#作用域或稱範疇scope)）
+
+`var` 不具備區塊作用域（Block Scope），所以若不在 `function` 之中使用可能會造成奇怪的問題。
 
 像是著名的例子：
 
@@ -198,7 +200,7 @@ for (let i = 0; i < 5; i++) {
 
 解法二：
 
-通常提到這個例子真正想要的答案，利用 IIFE 的函式作用域（Function Scope）
+通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](<(../04-functions/article.md#作用域或稱範疇scope)>)）
 
 ```js
 for (var i = 0; i < 5; i++) {
@@ -207,6 +209,19 @@ for (var i = 0; i < 5; i++) {
       console.log(i);
     }, i * 1000);
   })(i);
+}
+
+/* 或是這樣，很難看，但有效 */
+for (var i = 0; i < 5; i++) {
+  // 加上 `void` 只是不想顯示 setTimeout 回傳的 `timeoutID`
+  void setTimeout(
+    (function (i) {
+      return function () {
+        console.log(i);
+      };
+    })(i),
+    i * 1000
+  );
 }
 ```
 
