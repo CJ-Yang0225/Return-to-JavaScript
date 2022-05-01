@@ -173,7 +173,7 @@ aoTest(1);
 console.log(a); // 123
 ```
 
-完整模擬 GO & AO：
+#### 完整模擬 GO & AO
 
 ```js
 a = 1;
@@ -333,28 +333,36 @@ undefined
 
 - 自動執行並在完成後銷毀、釋放記憶體（一般函式宣告會保存在 GO 中）
 
+- 產生獨立的函式作用域，不汙染全域，可以方便封裝、模組化等等
+
 ```js
+// 寫法一
 (function () {
   console.log("IIFE 01");
-})();
+}());
 
+// 寫法二
 (function () {
   console.log("IIFE 02");
 })();
 ```
 
 ```js
-var test1 = (function () {
+// function test1() {}() //Uncaught SyntaxError: Unexpected token ')'
+
+// 等同於
+// function test1() {}
+// () // 突然出現一個 () 於是報錯
+
+var test2 = (function () {
   console.log("只有表達是（express）才能執行（invoke）");
 })();
-
-// function test2() {}() //Uncaught SyntaxError: Unexpected token ')'
 ```
 
-除了用小括號 `()`（parentheses），還有什麼方法可以讓函式宣告變成表達式呢？：
+除了用小括號 `()`（parentheses）將函式包住，還有什麼方法可以讓函式宣告變成表達式呢？：
 
 ```js
-// 只要轉換為表達式，那麼函式的名稱（宣告）則會無效
+// 注意：只要轉換為表達式，那麼函式的名稱（宣告）則會無效
 false ||
   function test2() {
     console.log("在 function 前加上 + - ! || && 就能做到");
@@ -363,19 +371,20 @@ false ||
 test2(); // Uncaught ReferenceError: test2 is not defined
 ```
 
-特別的方式 - 傳了引數，JS 引擎認為 `(123)` 是表達式：
+其他特別的方式 - 多傳了引數，JS 引擎就會認為 `(123)` 是表達式：
 
 ```js
 function test3(a) {
-  console.log("(123) 是表達式，() 語法錯誤");
-}(123)
+  console.log("(123) 是表達式，() JS引擎看不懂，報語法錯誤");
+}(123);
 ```
 
 IIFE 的面試題：
 
 ```js
 var a = 123;
-if (function b() {}) {  // 注意： (function b() {})
+if (function b() {}) {
+  // 注意： (function b() {})
   a += typeof b;
 }
 
@@ -396,10 +405,83 @@ console.log(a);
 "123undefined"
 ```
 
-函式不是 falsy，會進到 `if` 裡，但函式被 `()` 刮起來，變為表達式，因此函式的名稱（宣告）也就無效了，最終 `typeof` 回傳 `"undefined"` 加到 `123` 後面。
+函式不是 falsy，會進到 `if` 裡，但函式被 `()` 括起來，變為表達式，因此函式的名稱（宣告）也就無效了，最終 `typeof` 回傳 `"undefined"` 加到 `123` 後面。
 
 ## 閉包（Closure）
 
 當「主函式」執行，它的「內部函式」被回傳到外部並保存時，一定會產生閉包（Closure ），而這個「內部函式」的作用域鏈（Scope Chain）仍會保存「主函式」的 AO （Activation Object），當「內部函式」執行，則會產生它自己的 AO 並放在作用域鏈的最頂端，其他 AO 和 GO 向後依序排列。過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
 
-https://resources.jointjs.com/demos/javascript-ast
+```js
+function test1() {
+  function test2() {
+    console.log(a);
+  }
+  var a = "test1 的變數 a";
+  return test2;
+}
+
+var c = 0;
+var test3 = test1();
+
+test3();
+```
+
+### 模擬流程
+
+GO（Global Object）的執行期 context：
+
+| Name     | Value               |
+| -------- | ------------------- |
+| this     | window              |
+| window   | [object]            |
+| document | [object]            |
+| c        | 0                   |
+| test1    | function test1() {} |
+| test3    | function test2() {} |
+
+當函式 `test1` 被定義時，產生它的作用域（Scope）：
+
+| Scope     | Scope Chain |
+| --------- | ----------- |
+| [[Scope]] | GO          |
+
+當函式 `test1` 被執行後，產生自己的 AO（Activation Object）並存至作用域鏈的首位：
+
+| Scope     | Scope Chain      |
+| --------- | ---------------- |
+| [[Scope]] | AO (`test1`)、GO |
+
+函式 `test1` - AO（Activation Object）的執行期 context：
+
+| Name      | Value               |
+| --------- | ------------------- |
+| a         | "test1 的變數 a"    |
+| test2     | function test2() {} |
+
+當函式 `test2` 被定義時，產生和上級 `test1` 一樣的作用域（Scope）：
+
+| Scope     | Scope Chain      |
+| --------- | ---------------- |
+| [[Scope]] | AO (`test1`)、GO |
+
+當函式 `test2` 被執行後，產生自己的 AO（Activation Object）並存至作用域鏈的首位：
+
+| Scope     | Scope Chain                    |
+| --------- | ------------------------------ |
+| [[Scope]] | AO (`test2`)、AO (`test1`)、GO |
+
+當函式 `test1` 執行完後的作用域（Scope）：
+
+| Scope     | Scope Chain          |
+| --------- | -------------------- |
+| [[Scope]] | ~~AO (`test1`)~~、GO |
+
+函式 `test1` 執行完後，回傳函式 `test2` 到變數 `test3`，此時函式 `test1` 的 Scope Chain 切斷和自己 AO 的連結（回到函式 `test1` 被定義時的狀態），但不能直接回收 AO 的記憶體，因為函式 `test2` 還在使用它，這時候就形成了「閉包（Closure）」。
+
+當函式 `test2` 執行完後，它的 Scope Chain 也會切斷和自己 AO 的連結，但是仍然存著函式 `test1` 的 AO 和 GO，若再次執行則會重新生成自己的 AO。
+
+參考
+
+- [JavaScript 深入之变量对象 #5](https://github.com/mqyqingfeng/Blog/issues/5)
+
+<!-- https://resources.jointjs.com/demos/javascript-ast -->
