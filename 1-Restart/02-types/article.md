@@ -43,7 +43,7 @@ System.out.print(n);
 執行結果：
 
 ```bash
-> 579
+579
 ```
 
 弱型別以 JavaScript 為例：
@@ -56,7 +56,7 @@ console.log(n);
 執行結果：
 
 ```bash
-> "123456"
+"123456"
 ```
 
 ## JavaScript 之 強制轉型（Coercion）
@@ -188,109 +188,8 @@ console.log(!!" " + !!"" - "false" || "這樣會印出什麼？");
 console.lop(window.a || (window.a = "A_A"));
 ```
 
-## `valueOf()` & `toString()`
-
-如何讓這個判斷時成功執行，印出 success：
-
-```js
-if (a == 1 && a == 2 && a == 3) {
-  console.log("success!");
-}
-```
-
-關鍵在於思考如何讓 `a` 在隨著判斷推移改變其值，而 `==` 會觸發隱含轉型（Implicit Coercion），因此可以透過改寫隱含轉型所用到的函式來達成：
-
-```js
-// ==============修改此處===============
-var a = {
-  _current: 0,
-  valueOf: function () {
-    return ++this._current;
-  },
-  toString: function () {
-    console.log("nothing happens");
-  },
-};
-// ====================================
-
-if (a == 1 && a == 2 && a == 3) {
-  console.log("success!");
-}
-```
-
-- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值**非**原始（Primitive）型別，才會再執行 `toString()`
-- object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
-
-假如是 `===` 的情況：
-
-```js
-if (a === 1 && a === 2 && a === 3) {
-  console.log("success!");
-}
-```
-
-因為物件 `a` 已經不會觸發隱含轉型了，所以改用 `getter()` 的概念來實現，那麼重點是如何用物件 `a` 的同時發動 `getter()`，顯然在物件 `a` 裡面直接寫入 `getter()` 無法達到題目想要的效果。
-
-除非更改題目的判斷：
-
-```js
-// ==============修改此處===============
-var a = {
-  _current: 0,
-  get a() {
-    return ++this._current;
-  },
-};
-// ====================================
-
-// 只能改變題目
-if (a.a === 1 && a.a === 2 && a.a === 3) {
-  console.log("success!");
-}
-```
-
-於是想到在瀏覽器的全域（global）就是物件 Window，在全域裡宣告的 `var` 變數都會存入 `window` 其中，由此可對 `window` 寫入 `getter()` 以達成目標，但是 `window` 不能用一般方式寫入。
-
-以下 `get a()` 會失效，`window` 無法直接改寫：
-
-```js
-// ==============修改此處===============
-window = {
-  ...window,
-  _current: 0,
-  get a() {
-    return ++this._current;
-  },
-};
-// ====================================
-
-if (a === 1 && a === 2 && a === 3) {
-  console.log("success!");
-}
-```
-
-解決方式是利用 `Object.defineProperty()`：
-
-```js
-// ==============修改此處===============
-var _current = 0;
-
-Object.defineProperty(window, "a", {
-  get: function () {
-    return ++this._current;
-  },
-});
-// ====================================
-
-if (a === 1 && a === 2 && a === 3) {
-  console.log("success!");
-}
-```
-
 ### 參考
 
-[靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
+- [靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
 
-[你懂 JavaScript 嗎？#8 強制轉型（Coercion）](https://cythilya.github.io/2018/10/15/coercion/)
-
-[MDN - getter](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Functions/get)
+- [你懂 JavaScript 嗎？#8 強制轉型（Coercion）](https://cythilya.github.io/2018/10/15/coercion/)

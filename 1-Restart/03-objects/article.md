@@ -65,6 +65,8 @@ const b = [String, Number, Boolean, Object, Function, Array].map(
 console.log(b);
 ```
 
+## 物件的方法
+
 React.js 開發可用的 immutable array：
 
 ```js
@@ -84,9 +86,110 @@ console.log(array); // [{ name: "A" }, { name: "B" }]
 console.log(newArray); // [{ name: "A" }, { name: "C" }]
 ```
 
+### 物件轉型之 `valueOf()` & `toString()`
+
+如何讓這個判斷時成功執行，印出 success：
+
+```js
+if (a == 1 && a == 2 && a == 3) {
+  console.log("success!");
+}
+```
+
+關鍵在於思考如何讓 `a` 在隨著判斷推移改變其值，而 `==` 會觸發隱含轉型（Implicit Coercion），因此可以透過改寫隱含轉型所用到的函式來達成：
+
+```js
+// ==============修改此處===============
+var a = {
+  _current: 0,
+  valueOf: function () {
+    return ++this._current;
+  },
+  toString: function () {
+    console.log("nothing happens");
+  },
+};
+// ====================================
+
+if (a == 1 && a == 2 && a == 3) {
+  console.log("success!");
+}
+```
+
+- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值**非**原始（Primitive）型別，才會再執行 `toString()`
+- object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
+
+假如是 `===` 的情況：
+
+```js
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
+因為物件 `a` 已經不會觸發隱含轉型了，所以改用 `getter()` 的概念來實現，那麼重點是如何用物件 `a` 的同時發動 `getter()`，顯然在物件 `a` 裡面直接寫入 `getter()` 無法達到題目想要的效果。
+
+除非更改題目的判斷：
+
+```js
+// ==============修改此處===============
+var a = {
+  _current: 0,
+  get a() {
+    return ++this._current;
+  },
+};
+// ====================================
+
+// 只能改變題目
+if (a.a === 1 && a.a === 2 && a.a === 3) {
+  console.log("success!");
+}
+```
+
+於是想到在瀏覽器的全域（global）就是物件 Window，在全域裡宣告的 `var` 變數都會存入 `window` 其中，由此可對 `window` 寫入 `getter()` 以達成目標，但是 `window` 不能用一般方式寫入。
+
+以下 `get a()` 會失效，`window` 無法直接改寫：
+
+```js
+// ==============修改此處===============
+window = {
+  ...window,
+  _current: 0,
+  get a() {
+    return ++this._current;
+  },
+};
+// ====================================
+
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
+解決方式是利用 `Object.defineProperty()`：
+
+```js
+// ==============修改此處===============
+var _current = 0;
+
+Object.defineProperty(window, "a", {
+  get: function () {
+    return ++this._current;
+  },
+});
+// ====================================
+
+if (a === 1 && a === 2 && a === 3) {
+  console.log("success!");
+}
+```
+
 <!-- TODO -->
 
-<!-- ### Computed Property
+<!--
+
+### Computed Property
 
 ### 深拷貝 vs 淺拷貝
 
@@ -98,7 +201,9 @@ console.log(newArray); // [{ name: "A" }, { name: "C" }]
 
 ### Object.defineProperty() 舉例 in
 
-### Object.create() -->
+### Object.create()
+
+-->
 
 <!-- Move to the prototypes' chapter -->
 
@@ -151,6 +256,10 @@ console.log(person.sayHi === person.__proto__.sayHi); // true
 
 ### 參考
 
-[MDN - Object initializer](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Object_initializer)
+- [MDN - Object initializer](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Object_initializer)
 
-[JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/#object)
+- [JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/#object)
+
+- [[day04] YDKJS (Type) : Value 才有型別，變數沒有](https://ithelp.ithome.com.tw/articles/10217877)
+
+- [MDN - getter](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Functions/get)
