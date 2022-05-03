@@ -12,10 +12,10 @@
 
 [The Modern JavaScript Tutorial](https://javascript.info/)
 
-[Huli's blog](https://blog.huli.tw/)
-
-[PJCHENder 那些沒告訴你的小細節](https://pjchender.blogspot.com/)
+[You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS/tree/1st-ed)
 
 [JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/)
+
+[『JavaScript从零开始』的深度指南](https://www.youtube.com/playlist?list=PLwqdBEmIyeX52z0K2PT5CqPpU36B-M-Zr)
 
 [冴羽的博客](https://github.com/mqyqingfeng/Blog)

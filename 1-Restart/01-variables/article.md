@@ -128,6 +128,7 @@ var a = "parent 'a'";
 
 (function () {
   console.log(a); // Uncaught ReferenceError: Cannot access 'a' before initialization
+
   let a = "child 'a'";
 })();
 ```
@@ -158,7 +159,7 @@ var b = "parent 'b'";
 
 ## `var` 和 `let` 在不同作用域（Scope）下的影響
 
-簡單的函式作用域例子（更詳細的筆記在 [04 - Functions 章節](../04-functions/article.md#作用域或稱範疇scope)）
+簡單的函式作用域例子（更詳細的筆記在 [Functions 章節](../04-functions/article.md#作用域或稱範疇scope)）
 
 `var` 不具備區塊作用域（Block Scope），所以若不在 `function` 之中使用可能會造成奇怪的問題。
 
