@@ -16,11 +16,11 @@
 
 ```js
 var name; // 宣告變數： 預設的初始化（initialization）為 undefined
-name = "who?"; // 定義變數： 將 "who" 賦值 （assign）到變數中
+name = 'who?'; // 定義變數： 將 'who' 賦值 （assign）到變數中
 ```
 
 ```js
-var name = "CJ-Yang"; // 宣告並定義變數： 初始化為 "CJ-Yang"，然後賦值到變數中
+var name = 'CJ-Yang'; // 宣告並定義變數： 初始化為 'CJ-Yang'，然後賦值到變數中
 ```
 
 背後 JavaScript 引擎將記憶體劃分為兩個區塊：
@@ -36,18 +36,18 @@ var name = "CJ-Yang"; // 宣告並定義變數： 初始化為 "CJ-Yang"，然�
 // 第一步：宣告一個名為 name 的變數，將 name 儲存到程式碼空間的記憶體
 var name;
 
-// 第二步：先尋找 "CJ-Yang" 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦值到 name 變數
-name = "CJ-Yang";
+// 第二步：先尋找 'CJ-Yang' 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦值到 name 變數
+name = 'CJ-Yang';
 ```
 
 假如過程中修改了變數的值：
 
 ```js
-var name = "CJ-Yang";
+var name = 'CJ-Yang';
 
-// 先尋找 "New name"，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值到 name 變數，
-// 但原本的字串 "CJ-Yang" 仍然存在，所以這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
-name = "New name";
+// 先尋找 'New name'，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值到 name 變數，
+// 但原本的字串 'CJ-Yang' 仍然存在，所以這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
+name = 'New name';
 ```
 
 ## 提升（Hoisting）
@@ -58,17 +58,17 @@ JavaScript 是會進行編譯（Compiled）的，所以才有 Hoisting，簡單�
 
 ```js
 // 報錯，null 是一個保留字（Reserved Keyword）
-var null = "123"; // Uncaught SyntaxError: Unexpected token 'null'
+var null = '123'; // Uncaught SyntaxError: Unexpected token 'null'
 
 // 有趣的是 undefined 沒問題，因為它是全域物件下的屬性（property），不過 [[Writable]]: false
-var undefined = "123";
+var undefined = '123';
 ```
 
 變數會提升，賦值則不會提升：
 
 ```js
 console.log(a); // undefined
-var a = "123";
+var a = '123';
 ```
 
 可以想像為：
@@ -76,7 +76,7 @@ var a = "123";
 ```js
 var a;
 console.log(a); // undefined
-a = "123";
+a = '123';
 ```
 
 另一個例子：
@@ -124,25 +124,27 @@ undefined
 `let`:
 
 ```js
-var a = "parent 'a'";
+var a = 'parent `a`';
 
-(function () {
-  console.log(a); // Uncaught ReferenceError: Cannot access 'a' before initialization
+// 塊級作用域
+{
+  console.log(a); // Uncaught ReferenceError: Cannot access `a` before initialization
 
-  let a = "child 'a'";
-})();
+  let a = 'child `a`';
+};
 ```
 
 `const`:
 
 ```js
-var b = "parent 'b'";
+var b = 'parent `b`';
 
-(function () {
-  console.log(b); // Uncaught ReferenceError: Cannot access 'b' before initialization
+// 塊級作用域
+{
+  console.log(b); // Uncaught ReferenceError: Cannot access `b` before initialization
 
-  const b = "child 'b'";
-})();
+  const b = 'child `b`';
+}
 ```
 
 乍看之下 `let`/`const` 沒有被提升，但如果沒有被提升，不是應該印出全域的變數嗎？
@@ -159,7 +161,7 @@ var b = "parent 'b'";
 
 ## `var` 和 `let` 在不同作用域（Scope）下的影響
 
-簡單的函式作用域例子（更詳細的筆記在 [Functions 章節](../04-functions/article.md#作用域或稱範疇scope)）
+簡單的函式作用域例子（較詳細的筆記在 [Functions 章節](../04-functions/article.md#作用域或稱範疇scope)）
 
 `var` 不具備區塊作用域（Block Scope），所以若不在 `function` 之中使用可能會造成奇怪的問題。
 
@@ -172,7 +174,7 @@ for (var i = 0; i < 5; i++) {
   }, i * 1000);
 }
 
-console.log("outside:", i); // 穿透出迴圈區塊，影響全域
+console.log('outside:', i); // 穿透出迴圈區塊，影響全域
 ```
 
 執行結果：
@@ -201,7 +203,7 @@ for (let i = 0; i < 5; i++) {
 
 解法二：
 
-通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](<(../04-functions/article.md#作用域或稱範疇scope)>)）
+通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](../04-functions/article.md#作用域或稱範疇scope)）
 
 ```js
 for (var i = 0; i < 5; i++) {
@@ -212,9 +214,9 @@ for (var i = 0; i < 5; i++) {
   })(i);
 }
 
-/* 或是這樣，很難看，但有效 */
+/* 或是這樣，有點醜，但有效果 */
 for (var i = 0; i < 5; i++) {
-  // 加上 `void` 只是不想顯示 setTimeout 回傳的 `timeoutID`
+  // 加上 `void` 只是不想看到 setTimeout 回傳的 `timeoutID`
   void setTimeout(
     (function (i) {
       return function () {

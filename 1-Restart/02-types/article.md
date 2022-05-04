@@ -49,7 +49,7 @@ System.out.print(n);
 弱型別以 JavaScript 為例：
 
 ```js
-var n = 123 + "456"; // 觸發 JS 隱含轉型（Implicit Coercion）
+var n = 123 + '456'; // 觸發 JS 隱含轉型（Implicit Coercion）
 console.log(n);
 ```
 
@@ -69,10 +69,10 @@ JS 的強制轉型分為兩種：
 
 ```js
 // string
-Number("1asd"); // NaN
-parseInt("1asd"); // 1
-Number("12.3e1"); // 123  12.3 * 10^1
-parseInt("12.3e1"); // 12
+Number('1asd'); // NaN
+parseInt('1asd'); // 1
+Number('12.3e1'); // 123  12.3 * 10^1
+parseInt('12.3e1'); // 12
 
 // boolean
 Number(true); // 1
@@ -166,7 +166,7 @@ console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 
 ```js
 typeof 123; // "number"
-typeof "123"; // "string"
+typeof '123'; // "string"
 typeof true; // "boolean"
 typeof null; // "object"  bug，但為了兼容過去，沒有修復
 typeof undefined; // "undefined"
@@ -179,13 +179,13 @@ typeof function () {}; // "function"  ECMA-262 特別定義
 有趣的小測驗：
 
 ```js
-console.log(typeof a && -true + +undefined + "");
+console.log(typeof a && -true + +undefined + '');
 
-console.log(!!" " + !!"" + "false" || "會印出什麼？");
-console.log(!!" " + !!"" - "false" || "這樣會印出什麼？");
+console.log(!!' ' + !!'' + 'false' || '會印出什麼？');
+console.log(!!' ' + !!'' - 'false' || '這樣會印出什麼？');
 
 // 有陷阱，() 最優先，所以先判斷
-console.lop(window.a || (window.a = "A_A"));
+console.lop(window.a || (window.a = 'A_A'));
 ```
 
 ### 參考
