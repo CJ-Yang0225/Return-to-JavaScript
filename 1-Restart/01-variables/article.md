@@ -16,7 +16,7 @@
 
 ```js
 var name; // 宣告變數： 預設的初始化（initialization）為 undefined
-name = 'who?'; // 定義變數： 將 'who' 賦值 （assign）到變數中
+name = 'who?'; // 定義變數： 將 'who' 賦值（assign）到變數中
 ```
 
 ```js
@@ -165,10 +165,12 @@ var b = 'parent `b`';
 
 `var` 不具備區塊作用域（Block Scope），所以若不在 `function` 之中使用可能會造成奇怪的問題。
 
-像是著名的例子：
+常見的例子 - 想要1到5秒正確地依序印出 `1`、`2`、`3`、`4`、`5`：
 
 ```js
-for (var i = 0; i < 5; i++) {
+// var i = 1; 實際上就像在這宣告
+
+for (var i = 1; i <= 5; i++) {
   setTimeout(function () {
     console.log(i);
   }, i * 1000);
@@ -180,21 +182,21 @@ console.log('outside:', i); // 穿透出迴圈區塊，影響全域
 執行結果：
 
 ```bash
-5
-5
-5
-5
-5
+6
+6
+6
+6
+6
 ```
 
-因為 `setTimeout` 非同步事件，`for` 迴圈執行完後才會開始印出 `i`，這時的 `i` 已經是執行完後的值了
+因為 `setTimeout` 是非同步事件，`for` 迴圈執行完後才會開始印出 `i`，這時的 `i` 已經是執行完後的值了。
 
 解法一：
 
 使用具有塊級作用域的 `let`
 
 ```js
-for (let i = 0; i < 5; i++) {
+for (let i = 1; i <= 5; i++) {
   setTimeout(function () {
     console.log(i);
   }, i * 1000);
@@ -206,16 +208,19 @@ for (let i = 0; i < 5; i++) {
 通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](../04-functions/article.md#作用域或稱範疇scope)）
 
 ```js
-for (var i = 0; i < 5; i++) {
+for (var i = 1; i <= 5; i++) {
   (function (i) {
     setTimeout(function () {
       console.log(i);
     }, i * 1000);
   })(i);
 }
+```
 
-/* 或是這樣，有點醜，但有效果 */
-for (var i = 0; i < 5; i++) {
+或是這樣，有點醜，但有效果：
+
+```js
+for (var i = 1; i <= 5; i++) {
   // 加上 `void` 只是不想看到 setTimeout 回傳的 `timeoutID`
   void setTimeout(
     (function (i) {
@@ -228,14 +233,14 @@ for (var i = 0; i < 5; i++) {
 }
 ```
 
-終於達到想要的結果了：
+總算印出理想的結果：
 
 ```bash
-0
 1
 2
 3
 4
+5
 ```
 
 ### 參考
