@@ -15,7 +15,7 @@ JavaScript 是一門動態型別又是弱型別的語言，比其他語言較為
 ### **動態型別語言（Dynamically Type Languages）**
 
 - 型別檢查（Type Checking）發生於**執行時期（Runtime）**
-- 不用明確宣告變數的型別 ex: `var name = "CJ-Yang";`
+- 不用明確宣告變數的型別 ex: `var name = 'CJ-Yang';`
 - 執行期間能任意更換變數的類型
 
 ### **強型別** vs **弱型別**
@@ -56,7 +56,7 @@ console.log(n);
 執行結果：
 
 ```bash
-"123456"
+'123456'
 ```
 
 ## JavaScript 之 強制轉型（Coercion）
@@ -91,8 +91,8 @@ parseInt(undefined); // NaN
 // array
 /*
  * Array.prototype 沒有 valueOf()，但有 toString()
- * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => "1, 2, 3"
- * 若是空字串，[].toString() => ""
+ * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => '1, 2, 3'
+ * 若是空字串，[].toString() => ''
  */
 Number([]); // 0
 parseInt([]); // NaN
@@ -139,13 +139,13 @@ console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 
 - String — 字串類型，ex: `'hello'`, `"hello"`, `` `hello` ``
 
-- Boolean — 邏輯類型：`true` 和 `false`。除了 `false` 、`0`、`-0`、`0n`（bigint）、`""`、`null`、`undefined`、`NaN` 為 falsy，其餘皆為 truthy
+- Boolean — 邏輯類型：`true` 和 `false`。除了 `false` 、`0`、`-0`、`0n`（bigint）、`''`、`null`、`undefined`、`NaN` 為 falsy，其餘皆為 truthy
 
 - Null — 特殊值，代表過去可能有值，但是現在沒有（無、空值、未知）
 
 - Undefined — 特殊值，代表未賦予值，和未宣告（undeclared）變數時會得到的 `ReferenceError` 意義不同。ex: `var a; // undefined`
 
-- Symbol — 用於表示獨一無二的值。實務上很少使用，因為不支援舊瀏覽器。宣告不需要 `new`，ex: `Symbol("id")`
+- Symbol — 用於表示獨一無二的值，可作為物件屬性（property）。因為不支援舊瀏覽器，實務上較少使用。宣告不需要 `new`，ex: `Symbol('id')`
 
 - BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，宣告不需要 `new`，ex: `10n`, `BigInt(10)`
 
@@ -154,6 +154,7 @@ console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 ### 物件（Object）：JS 萬物根源，最複雜的資料型態，擁有多個子型別（subtype）
 
 - Array — 陣列，透過陣列實字（literal）的 `[]` 或 `new Array()` 建立
+
 - Function — 函式，可以呼叫的物件（Callable Object）
 
 - Date — 時間日期
@@ -165,15 +166,15 @@ console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 可以回傳參數的型別，在處理個別型別或快速檢查資料等等，很有幫助。
 
 ```js
-typeof 123; // "number"
-typeof '123'; // "string"
-typeof true; // "boolean"
-typeof null; // "object"  bug，但為了兼容過去，沒有修復
-typeof undefined; // "undefined"
-typeof undeclared; // "undefined"  變數未宣告卻直接使用會出現 ReferenceError，但 typeof 會出現 "undefined"，可以用來檢查變數是否宣告
-typeof {}; // "object"
-typeof []; // "object"
-typeof function () {}; // "function"  ECMA-262 特別定義
+typeof 123; // 'number'
+typeof '123'; // 'string'
+typeof true; // 'boolean'
+typeof null; // 'object'  bug，但為了兼容過去，沒有修復
+typeof undefined; // 'undefined'
+typeof undeclared; // 'undefined'  變數未宣告卻直接使用會出現 ReferenceError，但 typeof 會出現 'undefined'，可以用來檢查變數是否宣告
+typeof {}; // 'object'
+typeof []; // 'object'
+typeof function () {}; // 'function'  ECMA-262 特別定義
 ```
 
 有趣的小測驗：
@@ -185,7 +186,7 @@ console.log(!!' ' + !!'' + 'false' || '會印出什麼？');
 console.log(!!' ' + !!'' - 'false' || '這樣會印出什麼？');
 
 // 有陷阱，() 最優先，所以先判斷
-console.lop(window.a || (window.a = 'A_A'));
+console.log(window.a || (window.a = 'A_A'));
 ```
 
 ### 參考
