@@ -14,7 +14,7 @@ console.log(a); // function a() {}   若是用 `var a = 123;` 則會印出 123
 
 ## 參數（Parameters）和引數（Arguments）
 
-[MDN - The arguments object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments#rest_default_and_destructured_parameters) 有一句話：
+[MDN - The arguments object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments#rest_default_and_destructured_parameters) 說到：
 
 > Non-strict functions that are passed only simple parameters (that is, not rest, default, or restructured parameters) will sync the value of variables new values in the body of the function with the arguments object, and vice versa
 
@@ -22,7 +22,7 @@ console.log(a); // function a() {}   若是用 `var a = 123;` 則會印出 123
 
 ```js
 function test(a) {
-  arguments[0] = "引數"; // updating arguments[0] also updates a
+  arguments[0] = '引數'; // updating arguments[0] also updates a
   console.log(a, arguments[0]); // 引數 引數
 }
 
@@ -33,7 +33,7 @@ test(1);
 
 ```js
 function test(a) {
-  a = "參數"; // updating a also updates arguments[0]
+  a = '參數'; // updating a also updates arguments[0]
   console.log(a, arguments[0]); // 參數 參數
 }
 
@@ -43,8 +43,8 @@ test(1);
 但是如果參數有預設值（default parameters）、其餘參數（rest parameter）或解構參數（destructured parameters）：
 
 ```js
-function test(a = "default") {
-  a = "參數"; // updating a does not also update arguments[0]
+function test(a = 'default') {
+  a = '參數'; // updating a does not also update arguments[0]
   console.log(a, arguments[0]); // 參數 1
 }
 
@@ -53,31 +53,40 @@ test(1);
 
 ```js
 function test(a, ...rest) {
-  arguments[0] = "引數"; // updating arguments[0] does not also update a
+  arguments[0] = '引數'; // updating arguments[0] does not also update a
   console.log(a, arguments[0]); // 1 引數
 }
 
 test(1);
 ```
 
+```js
+function test({ a }) {
+  arguments[0] = { a: '引數' }; // updating arguments[0] does not also update a
+  console.log(a, arguments[0]['a']); // 1 引數
+}
+
+test({ a: 1 });
+```
+
 可以用以下方式查看函式的資訊：
 
 ```js
 var func = function func2(a, b) {
-  console.log("函式名稱：", func.name); // func2
-  console.log("參數（parameters）數量：", func.length); // 2
-  console.log("引數（arguments）數量：", arguments.length); // 3
+  console.log('函式名稱：', func.name); // func2
+  console.log('參數（parameters）數量：', func.length); // 2
+  console.log('引數（arguments）數量：', arguments.length); // 3
 };
 
 func(1, 2, 3);
 ```
 
-也可以用函式自帶的 `caller` 以及自動傳入函式的 `arguments.callee` 來得到資訊（`"use strict";` 嚴格模式下無法使用）：
+也可以用函式自帶的 `caller` 以及自動傳入函式的 `arguments.callee` 來得到資訊（`'use strict';` 嚴格模式下無法使用）：
 
 ```js
 var test1 = function test2() {
-  console.log("我是誰？：", arguments.callee);
-  console.log("誰呼叫了我？：", test2.caller);
+  console.log('我是誰？：', arguments.callee);
+  console.log('誰呼叫了我？：', test2.caller);
 };
 
 function caller() {
@@ -338,25 +347,31 @@ undefined
 ```js
 // 寫法一
 (function () {
-  console.log("IIFE 01");
-}());
+  console.log('IIFE 01');
+})();
 
 // 寫法二
 (function () {
-  console.log("IIFE 02");
-})();
+  console.log('IIFE 02');
+}());
 ```
 
+錯誤：
+
 ```js
-// function test1() {}() //Uncaught SyntaxError: Unexpected token ')'
+function test1() {}() //Uncaught SyntaxError: Unexpected token ')'
 
 // 等同於
-// function test1() {}
-// () // 突然出現一個 () 於是報錯
+function test1() {}
+() // 突然出現一個 () 於是報錯
+```
 
-var test2 = (function () {
-  console.log("只有表達是（express）才能執行（invoke）");
-})();
+正確：
+
+```js
+var test2 = function () {
+  console.log('若為表達式（express）就能被執行');
+}();
 ```
 
 除了用小括號 `()`（parentheses）將函式包住，還有什麼方法可以讓函式宣告變成表達式呢？：
@@ -365,26 +380,27 @@ var test2 = (function () {
 // 注意：只要轉換為表達式，那麼函式的名稱（宣告）則會無效
 false ||
   function test2() {
-    console.log("在 function 前加上 + - ! || && 就能做到");
+    console.log('在 function 前加上 + - ! || && 就能做到');
   }();
 
-test2(); // Uncaught ReferenceError: test2 is not defined
+// test2(); // Uncaught ReferenceError: test2 is not defined
 ```
 
-其他特別的方式 - 多傳了引數，JS 引擎就會認為 `(123)` 是表達式：
+其他特別的例子 - 多傳上引數，JS 引擎就會認為 `(123)` 是表達式，所以不報錯，但仍然不執行：
 
 ```js
-function test3(a) {
-  console.log("(123) 是表達式，() JS引擎看不懂，報語法錯誤");
+function test3() {
+  console.log('不會執行。(123) 是表達式，() JS引擎看不懂，報語法錯誤');
 }(123);
 ```
 
-IIFE 的面試題：
+IIFE 的測驗題：
 
 ```js
 var a = 123;
+
+// 注意： (function b() {})
 if (function b() {}) {
-  // 注意： (function b() {})
   a += typeof b;
 }
 
@@ -402,21 +418,25 @@ console.log(a);
 .
 
 ```bash
-"123undefined"
+123undefined
 ```
 
-函式不是 falsy，會進到 `if` 裡，但函式被 `()` 括起來，變為表達式，因此函式的名稱（宣告）也就無效了，最終 `typeof` 回傳 `"undefined"` 加到 `123` 後面。
+函式不是 falsy，會進到 `if` 裡，但函式被 `()` 括起來，變為表達式，因此函式的名稱（宣告）也就無效了，最終 `typeof` 回傳 `'undefined'` 加到 `123` 後面，印出 `'123undefined'`。
 
 ## 閉包（Closure）
 
-當「主函式」執行，它的「內部函式」被回傳到外部並保存時，一定會產生閉包（Closure ），而這個「內部函式」的作用域鏈（Scope Chain）仍會保存「主函式」的 AO （Activation Object），當「內部函式」執行，則會產生它自己的 AO 並放在作用域鏈的最頂端，其他 AO 和 GO 向後依序排列。過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
+當「主函式」執行，它的「內部函式（未執行）」被回傳到外部並被保存住時，就會產生閉包（Closure ）。
+
+這個「內部函式」的作用域鏈（Scope Chain）會持續保存「主函式」的 AO （Activation Object），當「內部函式」執行後，會產生它自己的 AO 並放在作用域鏈的首位，其他 AO 和 GO 向後依序排列，因此可以訪問到其 context 的變數。
+
+> 過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
 
 ```js
 function test1() {
   function test2() {
     console.log(a);
   }
-  var a = "test1 的變數 a";
+  var a = 'test1 的變數 a';
   return test2;
 }
 
@@ -455,7 +475,9 @@ GO（Global Object）的執行期 context：
 
 | Name      | Value               |
 | --------- | ------------------- |
-| a         | "test1 的變數 a"    |
+| this      | window              |
+| arguments | [array-like]        |
+| a         | 'test1 的變數 a'    |
 | test2     | function test2() {} |
 
 當函式 `test2` 被定義時，產生和上級 `test1` 一樣的作用域（Scope）：
@@ -470,6 +492,13 @@ GO（Global Object）的執行期 context：
 | --------- | ------------------------------ |
 | [[Scope]] | AO (`test2`)、AO (`test1`)、GO |
 
+函式 `test2` - AO（Activation Object）的執行期 context：
+
+| Name      | Value        |
+| --------- | ------------ |
+| this      | window       |
+| arguments | [array-like] |
+
 當函式 `test1` 執行完後的作用域（Scope）：
 
 | Scope     | Scope Chain          |
@@ -482,6 +511,8 @@ GO（Global Object）的執行期 context：
 
 參考
 
+- [MDN - Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions)
+
 - [JavaScript 深入之变量对象 #5](https://github.com/mqyqingfeng/Blog/issues/5)
 
-<!-- https://resources.jointjs.com/demos/javascript-ast -->
+<!-- 生成 AST： https://resources.jointjs.com/demos/javascript-ast -->
