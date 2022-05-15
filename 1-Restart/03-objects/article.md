@@ -161,6 +161,8 @@ new Test();
 
 ## 物件的方法
 
+### Object.assign
+
 React.js 開發可用的 immutable array：
 
 ```js
@@ -178,6 +180,19 @@ var newArray = Object.assign([...array], { [index]: { name: 'C' } });
 
 console.log(array); // [{ name: 'A' }, { name: 'B' }]
 console.log(newArray); // [{ name: 'A' }, { name: 'C' }]
+```
+
+### Object.create
+
+利用 `null` 沒有 `[[Prototype]]`（`__proto__`）的特性，可以用 `Object.create(null)` 來自訂特殊需求的原型物件。
+
+```js
+var obj1 = Object.create(null);
+obj1.num = 1;
+console.log(obj1); // { num: 1 }
+
+var obj2 = Object.create(obj1);
+console.log(obj2); // { [[Prototype]]: { num: 1} }
 ```
 
 ### 物件轉型之 `valueOf()` & `toString()`
