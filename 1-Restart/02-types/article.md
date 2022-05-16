@@ -100,7 +100,7 @@ parseInt([]); // NaN
 // object
 /*
  * Object.prototype 有 valueOf()，也有 toString()
- * 優先使用 valueOf()，如果返回的值不是 Primitive，則再用 toString()
+ * 優先使用 valueOf()，如果返回的值不能轉變為目標類型，則再用 toString()
  */
 Number({}); // NaN
 parseInt({}); // NaN
