@@ -161,7 +161,7 @@ new Test();
 
 ## 物件的方法
 
-### Object.assign
+### `Object.assign`
 
 React.js 開發可用的 immutable array：
 
@@ -182,9 +182,11 @@ console.log(array); // [{ name: 'A' }, { name: 'B' }]
 console.log(newArray); // [{ name: 'A' }, { name: 'C' }]
 ```
 
-### Object.create
+### `Object.create`
 
 利用 `null` 沒有 `[[Prototype]]`（`__proto__`）的特性，可以用 `Object.create(null)` 來自訂特殊需求的原型物件。
+
+範例：
 
 ```js
 var obj1 = Object.create(null);
@@ -195,7 +197,23 @@ var obj2 = Object.create(obj1);
 console.log(obj2); // { [[Prototype]]: { num: 1} }
 ```
 
-### 物件轉型之 `valueOf()` & `toString()`
+### 物件轉型之 `valueOf()` 與 `toString()`
+
+當物件需要強制轉型（Coercion）為 Primitive 型別時，有以下幾個步驟：
+
+1. object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值不能轉變為目標類型，才會再執行 `toString()`
+
+2. object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
+
+3. 若都沒有 `valueOf()` 和 `toString()` 兩方法，可能導致下方錯誤的發生
+
+由 [Object.create](#objectcreate) 範例可得知 `Object.create(null)` 創建的物件是沒有 `[[Prototype]]` 的，所以自然沒有 Object 的原型方法。
+
+物件是 Reference 型別，觸發隱含轉型為字串，但是沒有 `valueOf()` 或 `toString()` 可使用：
+
+```js
+console.log(Object.create(null) + ''); // Uncaught TypeError: Cannot convert object to primitive value
+```
 
 如何讓這個判斷時成功執行，印出 success：
 
@@ -224,9 +242,6 @@ if (a == 1 && a == 2 && a == 3) {
   console.log('success!');
 }
 ```
-
-- object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值不能轉變為目標類型，才會再執行 `toString()`
-- object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
 
 假如是 `===` 的情況：
 
