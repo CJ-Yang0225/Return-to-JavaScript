@@ -360,8 +360,11 @@ undefined
 
 ```js
 function test1() {}() //Uncaught SyntaxError: Unexpected token ')'
+```
 
-// 等同於
+等同於：
+
+```js
 function test1() {}
 () // 突然出現一個 () 於是報錯
 ```
@@ -380,7 +383,7 @@ var test2 = function () {
 // 注意：只要轉換為表達式，那麼函式的名稱（宣告）則會無效
 false ||
   function test2() {
-    console.log('在 function 前加上 + - ! || && 就能做到');
+    console.log('在 function 前加上 + - ! || && 等等就能做到');
   }();
 
 // test2(); // Uncaught ReferenceError: test2 is not defined
@@ -509,9 +512,57 @@ GO（Global Object）的執行期 context：
 
 當函式 `test2` 執行完後，它的 Scope Chain 也會切斷和自己 AO 的連結，但是仍然存著函式 `test1` 的 AO 和 GO，若再次執行則會重新生成自己的 AO。
 
+## 函式的方法
+
+### `call` & `apply` & `bind`
+
+影響 this 指向的優先級：
+
+```js
+function Car(brand, color) {
+  this.brand = brand;
+  this.color = color;
+
+  if (!new.target) {
+    return this;
+  }
+}
+
+var myCar = {
+  license: 'ABC-123'
+}
+
+var boundCar = Car.bind(myCar);
+
+/* 如果綁定時就放入全部或部分的引數 */
+var boundCar = Car.bind(myCar, 'Toyota');
+
+var car1 = boundCar('Ferrari', 'white');
+console.log(car1); // {license: 'ABC-123', brand: 'Ferrari', color: 'white'}
+
+var car2 = boundCar.call({ license: 'XYZ-456' }, 'BMW', 'blue');
+console.log(car2); // {license: 'ABC-123', brand: 'BMW', color: 'blue'}
+
+var car3 = boundCar.apply({ license: 'XYZ-456' }, ['BMW', 'green']);
+console.log(car3); // {license: 'ABC-123', brand: 'BMW', color: 'green'}
+
+var car4 = new boundCar('Tesla', 'silver');
+
+/* 忽略全部或部分的引數，不過 this 還是指向全新的物件 */
+var car4 = new boundCar('silver'); // {brand: 'Toyota', color: 'silver'}
+
+console.log(car4); // {brand: 'Tesla', color: 'red'}
+```
+
+由上方例子可知 `new` 關鍵字的優先權較高，接著是 `bind`，然後才是 `call` 跟 `apply`，它們可以說是相同的東西，只是用法上的差異，最後是一般的函式（取決於如何呼叫的）。
+
+另外 ES6 的箭頭函式（Arrow function）擁有更高的優先權，但它沒有自己的 `this`、`arguments`、`new` 和 `super` 等，所以不能當作建構器（Constructor）來使用，而且也不能使用`bind`、`call` 和 `apply` 之類的方法。
+
 參考
 
 - [MDN - Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions)
+
+- [MDN - Arrow function expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 
 - [JavaScript 深入之变量对象 #5](https://github.com/mqyqingfeng/Blog/issues/5)
 
