@@ -147,9 +147,9 @@ console.log(a); // undefined -> function a() {} -> 1
 
 ```js
 function aoTest(a, b) {
-  console.log(a); // 1 -> function a() {}
+  console.log(a); // undefined -> 1 -> function a() {}
   arguments[0] = 123;
-  console.log(a); // 123
+  console.log(a); // function a() {} -> 123
   function a() {}
   console.log(a); // 123
   console.log(b); // undefined
@@ -162,14 +162,14 @@ aoTest(1);
 
 ```js
 a = 123;
-function aoTest(a, b) {
+function aoTest2(a, b) {
   b = 2;
   var c;
-  console.log(a); // 1
-  console.log(b); // 2
+  console.log(a); // undefined -> 1
+  console.log(b); // undefined -> 2
   console.log(c); // undefined
   c = function () {};
-  console.log(d); // function d() {}
+  console.log(d); // undefined -> function d() {}
   var d = 4;
   function d() {}
 }
@@ -177,9 +177,9 @@ function aoTest(a, b) {
 var a;
 function a() {}
 
-aoTest(1);
+aoTest2(1);
 
-console.log(a); // 123
+console.log(a); // undefined -> function a() {} -> 123
 ```
 
 #### 完整模擬 GO & AO
