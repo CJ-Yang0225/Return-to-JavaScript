@@ -46,15 +46,19 @@ console.log('自然可使用 String 的方法->', greeting.split(''));
 > 自然可使用 String 的方法-> (8) ['H', 'e', 'l', 'l', 'o', ' ', 'J', 'S']
 ```
 
-自動裝箱（autoboxing）的小測驗 - 如何改動讓 `type.isString` 印出 `true`？：
+小測驗 - 如何改動讓 `type.isString` 印出 `true`？：
 
 ```js
 var str = 'abc';
 var type = typeof str; // 'string'
 
-// (new String(type).length === 6) -> true
+// 自動裝箱（autoboxing）：type.length => new String(type).length === 6
 if (type.length === 6) {
-  type.isString = true; // new String(type).isString = true; 隱性自動裝箱，但沒地方儲存，所以 type 還是保持一樣
+  /*
+   * 隱性自動裝箱： new String(type).isString = true;
+   * 但實例沒地方儲存，所以 type 還是保持一樣
+   */
+  type.isString = true;
 }
 
 console.log(type.isString); // undefined
@@ -317,11 +321,7 @@ if (a === 1 && a === 2 && a === 3) {
 
 ### 深拷貝 vs 淺拷貝 （Object.assign、spread syntax、JSON......）
 
-### Object.defineProperty()
-
 ### Object.defineProperty() 舉例 in
-
-### Object.create()
 
 ### Object.prototype.isPrototypeOf()
 
@@ -337,9 +337,13 @@ if (a === 1 && a === 2 && a === 3) {
 
 JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
 
-雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以連結到它，像是 `__proto__`（同時作為 getter 和 setter） 或較正式的 `Object.getPrototypeOf()`；而函式建構式（function constructor）的原型可由該建構式的 `prototype` 來存取。
+雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以連結到它，像是 `__proto__`（同時作為 getter 和 setter） 或較正式的 `Object.getPrototypeOf()` 和 `Object.setPrototypeOf()`；而函式建構式（function constructor）的原型可由該建構式的 `prototype` 來存取。
+
+JavaScript 原型的圖解：
 
 ![Prototype layout](../../assets/images/prototype-layout.jpg)
+
+較深入的例子在 [Prototypes 章節](../05-prototypes/article.md#原型prototype與繼承inheritance)
 
 ```js
 // Function Constructor
