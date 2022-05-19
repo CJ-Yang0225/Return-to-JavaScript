@@ -8,21 +8,9 @@ https://github.com/creeperyang/blog/issues/9
 
 https://github.com/jawil/blog/issues/13
 
-```js
-/* 釐清 */
+`Car` 建構產生 `car1` 實例，這時再重新賦值 `Car` 的原型物件一個新物件，不會影響已實例化之 `car1` 上的 `[[Prototype]]`（`__proto__`），因為實際上改的是 `Car.prototype`，而已實例化之 `car1` 的 `[[Prototype]]` 指向的仍是舊物件之位址。
 
-function Person() {}
-
-Person.__proto__ === Function.prototype;
-
-Person.__proto__.constructor === Function;
-
-Person.prototype.__proto__ === Object.prototype;
-
-typeof Person.prototype({}).__proto__ === Object.prototype;
-```
-
-實例後，再重新給 Car 的原型物件一個新物件，不會影響實例上的 `[[Prototype]]`（`__proto__`），因為實際上改的是 `Car.prototype`，而實例上的 `[[Prototype]]` 指向的是舊物件 reference
+例子：
 
 ```js
 function Car() {}
@@ -32,11 +20,14 @@ Car.prototype.brand = 'Benz';
 var car1 = new Car();
 
 Car.prototype = {
-  constructor: Car, // 建構函式預設屬性
+  constructor: Car, // 補上建構函式原型中預設會有的屬性
   brand: 'Mazda',
 };
 
+var car2 = new Car();
+
 console.log(car1.brand); // Benz
+console.log(car2.brand); // Mazda
 ```
 
 ![prototypes](../../assets/images/prototypes.png)
@@ -53,52 +44,69 @@ Function.__proto__ === Function.prototype;
 Function.prototype.__proto__ === Object.prototype;
 ```
 
-修改 prototype 的屬性（property）
+利用 `[[Prototype]]` 模擬繼承：
 
 ```js
-function Professor() {
-  this.age = 50;
-}
-Professor.prototype.pSkill = 'C/C++';
-var professor = new Professor();
-
-function Teacher() {
-  this.tSkill = 'JavaScript';
-  this.age = 40;
-  this.obj = {
-    a: 123,
+function Professor(name) {
+  this.pSkill = 'C/C++';
+  this.name = name;
+  this.age = 55;
+  this.info = {
+    email: 'lee_professor@gmail.com',
   };
 }
-Teacher.prototype = professor;
-var teacher = new Teacher();
-
-function Student() {
-  this.sSkill = 'VB';
-}
-Student.prototype = teacher;
-var student = new Student();
-student.age = student.age - 18; // 當原型物件的屬性值為 Primitive 型別時，透過實例物件修改屬性值「不會引起」原型物件的屬性值發生變化
-student.obj['a'] = 456; // 當原型物件的屬性值為 Reference 型別時，透過實例物件修改屬性值就「可能引起」原型物件的屬性值發生變化
-
-student.obj = {
-  a: 789,
+Professor.prototype.greeting = function () {
+  console.log(`Hello, I'm ${this.name}.`);
 };
 
-console.log(student);
+function Teacher(name) {
+  this.tSkill = 'JavaScript';
+  this.name = name;
+  this.age = 42;
+  this.info = {
+    email: 'chen_teacher@gmail.com',
+  };
+}
+Teacher.prototype = new Professor('Mr. Lee');
+
+function Student(name) {
+  this.name = name;
+  this.sSkill = 'Python';
+  this.age = 23;
+}
+Student.prototype = new Teacher('Mr. Chen');
+Student.prototype.constructor = Student;
+
+var student1 = new Student('Johnny');
+
+// 當原型物件的屬性值為 Primitive 型別時，透過實例物件修改屬性值「不會引起」原型物件的屬性值發生變化
+student1.age = student1.age - 18;
+
+// 當原型物件的屬性值為 Reference 型別時，透過實例物件修改屬性值就「可能引起」原型物件的屬性值發生變化
+student1.info.email = 'wang_teacher@gmail.com';
+
+var student2 = new Student('Depp');
+
+console.log(student1, student2);
 ```
+
+可能存在的問題：
+
+- 原型物件中 Reference 型別的屬性值會被所有實例共享，修改時要注意
+
+- 在建構子類的實例時，不能給父類的建構函式傳入引數（arguments）
 
 嘗試自製 `new`：
 
 ```js
 function myNew(Constructor) {
+  // var myThis = Object.create(Constructor.prototype); // ES6
   var myThis = {
     __proto__: Constructor.prototype,
   };
 
   var args = Array.from(arguments);
-  args.shift();
-
-  console.log('log:', args, arguments);
+  args.shift(); // 移出用不到的第一個引數 `Constructor`
 
   var result = Constructor.apply(myThis, args);
 
@@ -109,8 +117,10 @@ function Car(color, brand) {
   this.color = color;
   this.brand = brand;
 }
+Car.prototype.license = 'ABC-123';
 
 var myInstance = myNew(Car, 'black', 'Benz');
+console.log(myInstance.license);
 ```
 
 參考
