@@ -12,7 +12,9 @@
 
 也就是說值的表現（behave）類似物件，但是不代表值的原始型別就是物件（object）。
 
-更明確來說 JavaScript 會隱性將原始值自動裝箱（autoboxing）成物件，讓我們能使用其物件的方法：
+## 自動裝箱（Autoboxing）
+
+實際上 JavaScript 會隱性將原始值自動裝箱（[autoboxing](https://developer.mozilla.org/en-US/docs/Glossary/Primitive#autoboxing_primitive_wrapper_objects_in_javascript)）成物件，讓我們能使用其物件的方法
 
 ```js
 var greeting = 'Hello JS';
@@ -135,9 +137,9 @@ const b = [String, Number, Boolean, Object, Function, Array].map(
 console.log(b); // [String, Number, Boolean, {…}, ƒ, Array(0)]
 ```
 
-特殊的屬性 `new.target`：
+ES6 新增的特殊屬性 - `new.target`：
 
-可以在函式裡面判斷函式的執行是否使用了 `new`，如果當成一般函式使用時，它為 `undefined`，反之為自己本身。
+可以在函式裡面判斷函式的執行是否使用了 `new`，如果當成一般函式使用時，它為 `undefined`；反之為自己本身。
 
 ```js
 function Test() {
@@ -153,6 +155,34 @@ function Test() {
 }
 
 new Test();
+```
+
+自製 `new`：
+
+```js
+function myNew(Constructor) {
+  // var myThis = Object.create(Constructor.prototype); // ES6
+  var myThis = {
+    __proto__: Constructor.prototype,
+  };
+
+  var args = Array.from(arguments);
+  args.shift(); // 移出用不到的第一個引數 `Constructor`
+
+  var result = Constructor.apply(myThis, args);
+
+  // 排除當 result 為 null，而 typeof result 為 'object' 的情況
+  return result instanceof Object ? result : myThis;
+}
+
+function Car(color, brand) {
+  this.color = color;
+  this.brand = brand;
+}
+Car.prototype.license = 'ABC-123';
+
+var myInstance = myNew(Car, 'black', 'Benz');
+console.log(myInstance.license);
 ```
 
 ### 建構器（Constructor）的 `return`
@@ -331,9 +361,7 @@ if (a === 1 && a === 2 && a === 3) {
 
 ## JavaScript 的「物件」導向
 
-由上面結果可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
-
-## 原型 （Prototypes）
+由[Object 章節 - 自動裝箱（Autoboxing）](../03-objects/article.md#自動裝箱autoboxing)的範例可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
 
 JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
 
@@ -342,8 +370,6 @@ JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬
 JavaScript 原型的圖解：
 
 ![Prototype layout](../../assets/images/prototype-layout.jpg)
-
-較深入的例子在 [Prototypes 章節](../05-prototypes/article.md#原型prototype與繼承inheritance)
 
 ```js
 // Function Constructor
@@ -383,6 +409,8 @@ console.log(person.sayHi === person.__proto__.sayHi); // true
 ### 參考
 
 - [MDN - Object initializer](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Object_initializer)
+
+- [MDN - Autoboxing: primitive wrapper objects in JavaScript](https://developer.mozilla.org/en-US/docs/Glossary/Primitive#autoboxing_primitive_wrapper_objects_in_javascript)
 
 - [JavaScript Garden](https://bonsaiden.github.io/JavaScript-Garden/#object)
 
