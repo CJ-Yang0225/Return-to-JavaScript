@@ -133,6 +133,23 @@ console.log(null == 0); // false  特殊，ECMA-262 演算法推算
 console.log(undefined == null); // true  特殊，ECMA-262 演算法推算
 ```
 
+ECMA-262 [7.2.11 Abstract Relational Comparison](https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison) 翻譯：
+
+1. 如果 x 不是正常值（例如拋出錯誤），中斷執行。
+2. 如果 y 不是正常值，中斷執行。
+3. 如果 Type(x) 與 Type(y) 相同，執行嚴格相等運算 x === y。
+4. 如果 x 是 null，y 是 undefined，返回 true。
+5. 如果 x 是 undefined，y 是 null，返回 true。
+6. 如果 Type(x) 是數值，Type(y) 是字串，返回 x == ToNumber(y) 的結果。
+7. 如果 Type(x) 是字串，Type(y) 是數值，返回 ToNumber(x) == y 的結果。
+8. 如果 Type(x) 是布林值，返回 ToNumber(x) == y 的結果。
+9. 如果 Type(y) 是布林值，返回 x == ToNumber(y) 的結果。
+10. 如果 Type(x) 是字串或數值或 Symbol 值，Type(y) 是物件，返回 x == ToPrimitive(y) 的結果。
+11. 如果 Type(x) 是物件，Type(y) 是字串或數值或 Symbol 值，返回 ToPrimitive(x) == y 的結果。
+12. 返回 false。
+
+因為前11步得不到答案（`==` 比較時 `undefined`、`null` 不會轉型），所以 `undefined == 0` 和 `null == 0` 直接返回 `false`；而第4、第5步表明 `undefined == null` 為 `true`。
+
 ## **原始（Primitive）** 型別
 
 - Number — 包含整數、浮點數、Infinity、-Infinity 和 NaN（Not a Number）
@@ -192,5 +209,7 @@ console.log(window.a || (window.a = 'A_A'));
 ### 參考
 
 - [靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
+
+- [MDN - Equality (==)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Equality)
 
 - [你懂 JavaScript 嗎？#8 強制轉型（Coercion）](https://cythilya.github.io/2018/10/15/coercion/)
