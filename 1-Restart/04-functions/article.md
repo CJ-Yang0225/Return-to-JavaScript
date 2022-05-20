@@ -516,7 +516,7 @@ GO（Global Object）的執行期 context：
 
 ### `call` & `apply` & `bind`
 
-影響 this 指向的優先級：
+影響 this 指向的優先順序：
 
 ```js
 function Car(brand, color) {
@@ -554,9 +554,9 @@ var car4 = new boundCar('silver'); // {brand: 'Toyota', color: 'silver'}
 console.log(car4); // {brand: 'Tesla', color: 'red'}
 ```
 
-由上方例子可知 `new` 關鍵字的優先權較高，接著是 `bind`，然後才是 `call` 跟 `apply`，它們可以說是相同的東西，只是用法上的差異，最後是一般的函式（取決於如何呼叫的）。
+由上方例子可知 `new` 關鍵字的優先權較高，接著是 `bind`，然後才是 `call` 跟 `apply`，它們可以說是相同的東西（只是引數填入的方式有差異），最後是一般的函式（取決於如何呼叫的）。
 
-另外 ES6 的箭頭函式（Arrow function）擁有更高的優先權，但它沒有自己的 `this`、`arguments`、`new` 和 `super` 等，所以不能當作建構器（Constructor）來使用，而且也不能使用`bind`、`call` 和 `apply` 之類的方法。
+另外 ES6 的箭頭函式（Arrow function）擁有更高的優先權，因為它沒有自己的 `this`，也不能使用`bind`、`call` 和 `apply` 之類的方法，它的 `this` 取決於它定義時的 context；而且箭頭函式沒有 `new`、`arguments` 和 `super` 等，所以不能當作建構器（Constructor）來使用。
 
 參考
 
