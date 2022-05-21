@@ -89,16 +89,16 @@ parseInt(undefined); // NaN
 // -------
 
 // array
-/*
+/**
  * Array.prototype 沒有 valueOf()，但有 toString()
- * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => '1, 2, 3'
+ * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => '1,2,3'
  * 若是空字串，[].toString() => ''
  */
 Number([]); // 0
 parseInt([]); // NaN
 
 // object
-/*
+/**
  * Object.prototype 有 valueOf()，也有 toString()
  * 優先使用 valueOf()，如果返回的值不能轉變為目標類型，則再用 toString()
  */
