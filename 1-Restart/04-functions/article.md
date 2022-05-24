@@ -451,16 +451,17 @@ test3();
 
 ### 模擬流程
 
-GO（Global Object）的執行期 context：
+GO 的 execution context：
 
-| Name     | Value               |
-| -------- | ------------------- |
-| this     | window              |
-| window   | [object]            |
-| document | [object]            |
-| c        | 0                   |
-| test1    | function test1() {} |
-| test3    | function test2() {} |
+| Name     | Value                   |
+| -------- | ----------------------- |
+| ...      | ...                     |
+| this     | window                  |
+| window   | [object]                |
+| document | [object]                |
+| c        | 0                       |
+| test1    | function test1() {}     |
+| test3    | function **test2**() {} |
 
 當函式 `test1` 被定義時，產生它的作用域（Scope）：
 
@@ -468,13 +469,13 @@ GO（Global Object）的執行期 context：
 | --------- | ----------- |
 | [[Scope]] | GO          |
 
-當函式 `test1` 被執行後，產生自己的 AO（Activation Object）並存至作用域鏈的首位：
+當函式 `test1` 被執行後，產生自己的 AO 並存至作用域鏈的首位：
 
 | Scope     | Scope Chain      |
 | --------- | ---------------- |
 | [[Scope]] | AO (`test1`)、GO |
 
-函式 `test1` - AO（Activation Object）的執行期 context：
+函式 `test1` - AO 的 execution context：
 
 | Name      | Value               |
 | --------- | ------------------- |
@@ -489,13 +490,13 @@ GO（Global Object）的執行期 context：
 | --------- | ---------------- |
 | [[Scope]] | AO (`test1`)、GO |
 
-當函式 `test2` 被執行後，產生自己的 AO（Activation Object）並存至作用域鏈的首位：
+當函式 `test2` 被執行後，產生自己的 AO 並存至作用域鏈的首位：
 
 | Scope     | Scope Chain                    |
 | --------- | ------------------------------ |
 | [[Scope]] | AO (`test2`)、AO (`test1`)、GO |
 
-函式 `test2` - AO（Activation Object）的執行期 context：
+函式 `test2` - AO 的 execution context：
 
 | Name      | Value        |
 | --------- | ------------ |
