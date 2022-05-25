@@ -147,7 +147,7 @@ var b = 'parent `b`';
 }
 ```
 
-乍看之下 `let`/`const` 沒有被提升，但如果沒有被提升，不是應該印出全域的變數嗎？
+乍看之下 `let`／`const` 沒有被提升，但如果沒有被提升，不是應該印出全域的變數嗎？
 
 除此之外，可以看到 ES6 標準的章節[13.3.1](http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations)提到：
 
@@ -155,9 +155,9 @@ var b = 'parent `b`';
 > is instantiated but may not be accessed in any way until the
 > variable’s LexicalBinding is evaluated.
 
-說明當新的作用域（Lexical Environment）實體化後，在此作用域中使用 `let`/`const` 宣告的變數也會先被建立，但是變數未經過詞法綁定（LexicalBinding），所以被存取時就會拋出錯誤訊息。這段執行流程進入作用域建立變數，到變數可以開始被存取的一段時間，稱之為暫時死區（Temporal Dead Zone）。
+說明當新的作用域環境（Lexical Environment）實體化後，在此作用域中使用 `let`／`const` 宣告的變數也會先被建立，但是變數未經過詞法綁定（LexicalBinding），所以被存取時就會拋出錯誤訊息。這段執行流程進入作用域環境建立變數，到變數可以開始被存取的一段時間，稱之為暫時死區（Temporal Dead Zone）。
 
-由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoisting，只是 `var` 得到 `undefined`，而 `let`/`const` 是在執行前拋出錯誤。
+由上述說明可以得知其實 `let` 和 `const` 還是存在 Hoisting，只是 `var` 得到 `undefined`，而 `let`／`const` 是在執行前拋出錯誤。
 
 ## `var` 和 `let` 在不同作用域（Scope）下的影響
 
@@ -205,7 +205,7 @@ for (let i = 1; i <= 5; i++) {
 
 解法二：
 
-通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](../04-functions/article.md#作用域或稱範疇scope)）
+通常提到這個例子真正想要的答案，利用 IIFE 產生的函式作用域（[Function Scope](../04-functions/article.md#作用域scope和作用域鏈scope-chain)）
 
 ```js
 for (var i = 1; i <= 5; i++) {
