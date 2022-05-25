@@ -9,13 +9,13 @@ JavaScript 是一門動態型別又是弱型別的語言，比其他語言較為
 ### **靜態型別語言（Statically Typed Languages）**
 
 - 型別檢查（Type Checking）發生於**編譯時期（Compile Time）**
-- 宣告變數必須使用明確的型別 ex: `String name = "CJ-Yang";`
+- 宣告變數必須使用明確的型別 ex. `String name = "CJ-Yang";`
 - 型別宣告完後，執行期間無法隨意更改變數的類型
 
 ### **動態型別語言（Dynamically Type Languages）**
 
 - 型別檢查（Type Checking）發生於**執行時期（Runtime）**
-- 不用明確宣告變數的型別 ex: `var name = 'CJ-Yang';`
+- 不用明確宣告變數的型別 ex. `var name = 'CJ-Yang';`
 - 執行期間能任意更換變數的類型
 
 ### **強型別** vs **弱型別**
@@ -91,7 +91,7 @@ parseInt(undefined); // NaN
 // array
 /**
  * Array.prototype 沒有 valueOf()，但有 toString()
- * 它定義的 toString() 會回傳字串，ex: [1,2,3].toString() => '1,2,3'
+ * 它定義的 toString() 會回傳字串，ex. [1,2,3].toString() => '1,2,3'
  * 若是空字串，[].toString() => ''
  */
 Number([]); // 0
@@ -154,17 +154,17 @@ ECMA-262 [7.2.11 Abstract Relational Comparison](https://262.ecma-international.
 
 - Number — 包含整數、浮點數、Infinity、-Infinity 和 NaN（Not a Number）
 
-- String — 字串類型，ex: `'hello'`, `"hello"`, `` `hello` ``
+- String — 字串類型，ex. `'hello'`, `"hello"`, `` `hello` ``
 
 - Boolean — 邏輯類型：`true` 和 `false`。除了 `false` 、`0`、`-0`、`0n`（bigint）、`''`、`null`、`undefined`、`NaN` 為 falsy，其餘皆為 truthy
 
 - Null — 特殊值，代表過去可能有值，但是現在沒有（無、空值、未知）
 
-- Undefined — 特殊值，代表未賦予值，和未宣告（undeclared）變數時會得到的 `ReferenceError` 意義不同。ex: `var a; // undefined`
+- Undefined — 特殊值，代表未賦予值，和未宣告（undeclared）變數時會得到的 `ReferenceError` 意義不同。ex. `var a; // undefined`
 
-- Symbol — 用於表示獨一無二的值，可作為物件屬性（property）。因為不支援舊瀏覽器，實務上較少使用。宣告不需要 `new`，ex: `Symbol('id')`
+- Symbol — 用於表示獨一無二的值，可作為物件屬性（property）。因為不支援舊瀏覽器，實務上較少使用。宣告不需要 `new`，ex. `Symbol('id')`
 
-- BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，宣告不需要 `new`，ex: `10n`, `BigInt(10)`
+- BigInt — 用於表示 Number 無法呈現的數字，像是大於 $2^{53}-1$，宣告不需要 `new`，ex. `10n`, `BigInt(10)`
 
 ## **參考（Reference）** 型別
 
