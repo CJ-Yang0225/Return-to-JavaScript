@@ -26,17 +26,25 @@ var name = 'CJ-Yang'; // 宣告並定義變數： 初始化為 'CJ-Yang'，然�
 背後 JavaScript 引擎將記憶體劃分為兩個區塊：
 
 - 程式碼空間
-- Stack & Heap（資料空間）
+- Stack & Heap 資料空間
 
-一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，要取決於環境的實作方式等，因此以下以「儲存到 Stack & Heap 」來描述。
+一般 Primitive 型別會存於 Stack 之中，而 Reference 型別存於 Heap 之中，但不是絕對的，主要取決於環境的實作方式等，因此以下以「儲存到 Stack & Heap 」來描述。
 
 較完整的例子主要分成兩步驟：
 
 ```js
-// 第一步：宣告一個名為 name 的變數，將 name 儲存到程式碼空間的記憶體
+/**
+ * 第一步：
+ * 宣告一個名為 name 的變數，
+ * 將 name 儲存到程式碼空間的記憶體。
+ */
 var name;
+/**
+ * 第二步：
+ * 先尋找 'CJ-Yang' 是否存在於 Stack & Heap 的記憶體中，
+ * 若不存在則先建立並儲存到 Stack & Heap 的記憶體中，然後將其賦值到 name 變數。
+ */
 
-// 第二步：先尋找 'CJ-Yang' 是否存在，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後將其賦值到 name 變數
 name = 'CJ-Yang';
 ```
 
@@ -45,8 +53,12 @@ name = 'CJ-Yang';
 ```js
 var name = 'CJ-Yang';
 
-// 先尋找 'New name'，若不存在則建立並儲存到 Stack & Heap 的記憶體中，然後賦值到 name 變數，
-// 但原本的字串 'CJ-Yang' 仍然存在，所以這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
+/**
+ * 先尋找 'New name' 是否存在於 Stack & Heap 的記憶體中，
+ * 若不存在則先建立並儲存到 Stack & Heap 的記憶體中，然後賦值到 name 變數，
+ * 但原本建立的字串 'CJ-Yang' 仍然在記憶體裡，
+ * 這時就需要靠 JS 的 Garbage Collector 系統來判斷是否進行垃圾回收。
+ */
 name = 'New name';
 ```
 
@@ -64,7 +76,7 @@ var null = '123'; // Uncaught SyntaxError: Unexpected token 'null'
 var undefined = '123';
 ```
 
-變數會提升，賦值則不會提升：
+變數會提升，**賦值不會提升**：
 
 ```js
 console.log(a); // undefined
