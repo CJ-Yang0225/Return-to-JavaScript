@@ -206,7 +206,9 @@ console.log(!!' ' + !!'' - 'false' || '這樣會印出什麼？');
 console.log(window.a || (window.a = 'A_A'));
 ```
 
-### 參考
+---
+
+參考資料：
 
 - [靜態語言 vs. 動態語言的比較](http://blog.sina.com.tw/dotnet/article.php?entryid=614009)
 
