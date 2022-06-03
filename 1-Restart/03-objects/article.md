@@ -56,7 +56,7 @@ var type = typeof str; // 'string'
 
 // 自動裝箱（autoboxing）：type.length => new String(type).length === 6
 if (type.length === 6) {
-  /*
+  /**
    * 隱性自動裝箱： new String(type).isString = true;
    * 但實例沒地方儲存，所以 type 還是保持一樣
    */
@@ -93,11 +93,11 @@ console.log(type.isString); // true
 
 物件實字（literal）`{}` 可以創建一個物件，但是當要創建多個相似的物件時，為求方便就需要一個像是工廠般的存在 - 建構器（Constructor）。
 
-一般的函式除了可以被執行外，還能當作建構器使用（Arrow function 除外），為了區別兩者，通常會將函式名稱的開頭用大寫來表示，不過它的本質還是函式，所以會搭配 `new` 來執行。
+一般的函式除了可以被執行外，還能當作建構器使用（Arrow function 除外），稱為建構函式。為了區別一般函式和建構函式，通常會將函式名的開頭用大寫來表示，不過它的本質仍是函式，所以還需要搭配 `new` 來使用。
 
 當函式前面搭配 `new` 執行時，會自動完成幾個步驟：
 
-1. 創建一個新物件，新物件內部的 `[[Prototype]]`（`__proto__`）預設指向這個建構器的原型（prototype），並將新物件賦值給 `this`
+1. 創建一個新物件，新物件內部的 `[[Prototype]]`（setter `__proto__`）預設指向這個建構器的原型（prototype），並將新物件賦值給 `this`
 
 2. 函式體內部可以對 `this` 進行操作，比如新增物件的屬性（property）
 
@@ -210,7 +210,12 @@ var array = [
 ];
 
 var index = 1;
-var newArray = Object.assign([...array], { [index]: { name: 'C' } });
+var newArray = Object.assign(
+  [...array],
+
+  // ES6 - Computed property names
+  { [index]: { name: 'C' } }
+);
 
 console.log(array); // [{ name: 'A' }, { name: 'B' }]
 console.log(newArray); // [{ name: 'A' }, { name: 'C' }]
@@ -228,22 +233,22 @@ obj1.num = 1;
 console.log(obj1); // { num: 1 }
 
 var obj2 = Object.create(obj1);
-console.log(obj2); // { [[Prototype]]: { num: 1} }
+console.log(obj2); // { [[Prototype]]: { num: 1 } }
 ```
 
-### 物件轉型之 `valueOf()` 與 `toString()`
+### 物件轉型之 `valueOf` 與 `toString`
 
-當物件需要強制轉型（Coercion）為 Primitive 型別時，有以下幾個步驟：
+當物件沒有定義 [`Symbol.toPrimitive`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) 又需要轉型（Coercion）為 Primitive 型別時，會經過以下步驟：
 
-1. object 若**有**定義 `valueOf()` 則會優先使用，除非 `valueOf()` 返回的值不能轉變為目標類型，才會再執行 `toString()`
+1. object 若**有**定義 `valueOf` 則會優先使用，除非 `valueOf` 返回的值不能轉變為目標類型，才會再執行 `toString`
 
-2. object 若**沒有**定義 `valueOf()` 則會以 `toString()` 為優先使用
+2. object 若**沒有**定義 `valueOf` 則會以 `toString` 為優先使用
 
-3. 若都沒有 `valueOf()` 和 `toString()` 兩方法，可能導致下方錯誤的發生
+3. 若都沒有 `valueOf` 和 `toString` 兩方法，可能導致錯誤的發生
 
 由 [Object.create](#objectcreate) 範例可得知 `Object.create(null)` 創建的物件是沒有 `[[Prototype]]` 的，所以自然沒有 Object 的原型方法。
 
-物件是 Reference 型別，觸發隱含轉型為字串，但是沒有 `valueOf()` 或 `toString()` 可使用：
+觸發隱含轉型為字串，但是沒有 `valueOf` 或 `toString` 可使用：
 
 ```js
 console.log(Object.create(null) + ''); // Uncaught TypeError: Cannot convert object to primitive value
@@ -285,7 +290,7 @@ if (a === 1 && a === 2 && a === 3) {
 }
 ```
 
-因為物件 `a` 已經不會觸發隱含轉型了，所以改用 `getter()` 的概念來實現，那麼重點是如何用物件 `a` 的同時發動 `getter()`，但直接在物件 `a` 裡面直接寫入 `getter()` 無法達到題目想要的效果。
+因為物件 `a` 已經不會觸發隱含轉型了，所以改用 getter 的概念來實現，那麼重點是：如何用物件 `a` 的同時發動 getter，直接在物件 `a` 裡面直接寫入 getter 無法達到題目想要的效果。
 
 除非更改題目的判斷：
 
@@ -299,15 +304,15 @@ var a = {
 };
 // ====================================
 
-// 只能改變題目
+// 但這樣顯然不符合題意
 if (a.a === 1 && a.a === 2 && a.a === 3) {
   console.log('success!');
 }
 ```
 
-於是想到在瀏覽器的全域（global）就是物件 Window，在全域裡宣告的 `var` 變數都會存入 `window` 其中，由此可對 `window` 寫入 `getter()` 以達成目標，但是 `window` 不能用一般方式寫入。
+於是想到在瀏覽器的全域（global）部分就是 window 物件，在全域裡宣告的 `var` 變數都會存入 `window` 其中，由此可對 `window` 寫入 getter 以達成目標，但是 `window` 不能用一般物件撰寫 getter 的方式。
 
-以下 `get a()` 會失效，`window` 無法直接改寫：
+以下 `get a()` 會失效，`window` 物件無法直接改寫：
 
 ```js
 // ==============修改此處===============
@@ -343,36 +348,211 @@ if (a === 1 && a === 2 && a === 3) {
 }
 ```
 
-<!-- TODO -->
+## 淺拷貝（Shallow copy） vs 深拷貝（Deep copy）
 
-<!--
+### 淺拷貝
 
-### Computed Property
+`for...in` 模擬：
 
-### 深拷貝 vs 淺拷貝 （Object.assign、spread syntax、JSON......）
+```js
+function cloneShallow(origin) {
+  var target = {};
 
-### Object.defineProperty() 舉例 in
+  for (var prop in origin) {
+    if (origin.hasOwnProperty(prop)) {
+      target[prop] = origin[prop];
+    }
+  }
+  return target;
+}
 
-### Object.prototype.isPrototypeOf()
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
 
--->
+var car2 = cloneShallow(car1);
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456';
+console.log('Car2:', car2);
+console.log('Car1:', car1);
+```
+
+`Object.assign` 模擬：
+
+```js
+
+```
+
+ES6 - Spread syntax (`...`)模擬：
+
+```js
+
+```
+
+### 深拷貝
+
+`for...in` 模擬：
+
+```js
+function cloneDeep(origin) {
+  var target = {};
+  var objectToString = Object.prototype.toString;
+  var ARRAY_TYPE = '[object Array]';
+
+  for (var prop in origin) {
+    if (origin.hasOwnProperty(prop)) {
+      if (typeof origin[prop] === 'object' && origin[prop]) {
+        target[prop] =
+          objectToString.call(origin[prop]) === ARRAY_TYPE ? [] : {};
+        cloneDeep(origin[prop], target[prop]);
+      } else {
+        target[prop] = origin[prop];
+      }
+    }
+  }
+  return target;
+}
+
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
+
+var car2 = cloneDeep(car1);
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456';
+
+console.log('Car2:', car2);
+console.log('Car1:', car1);
+```
+
+存在的問題：
+
+- 當兩個 Reference 型別中都有指向另一方的屬性，會造成無限遞迴，產生錯誤：
+
+  ```js
+  /* 省略 cloneDeep 函式 */
+
+  var obj1 = {
+    name: 'obj1',
+  };
+  var obj2 = {
+    name: 'obj2',
+  };
+  obj1.obj2 = obj2;
+  obj2.obj1 = obj1;
+
+  console.log(cloneDeep(obj1)); // Uncaught RangeError: Maximum call stack size exceeded
+  ```
+
+- 當要被深拷貝的 Reference 型別是 `Date`、`RegExp` 或函式等等時，無法順利拷貝：
+
+  ```js
+  /* 省略 cloneDeep 函式 */
+
+  var date1 = new Date();
+  var date2 = cloneDeep(date1);
+
+  console.log(date2); // {}
+  ```
+
+ES6 優化版 `for...in` 模擬：
+
+```js
+function cloneDeep(origin, hashMap = new WeakMap()) {
+  // null == undefined 為 true，所以可包括 origin 為 null 或 undefined的狀態
+  if (origin == undefined || !(origin instanceof Object)) {
+    return origin;
+  }
+
+  const constructor = origin.constructor;
+
+  // Date、RegExp、Function 實例的拷貝
+  if (/(Date|RegExp)/.test(constructor.name)) {
+    return new constructor(origin);
+  } else if (/Function/.test(constructor.name)) {
+    return origin.bind();
+  }
+
+  // 檢查是否拷貝過此來源物件
+  const clonedTarget = hashMap.get(origin);
+  if (clonedTarget) {
+    return clonedTarget;
+  }
+
+  // 取得來源物件對應的建構函式並重新建立實例
+  const target = new constructor();
+
+  // 標記並保存已拷貝過的物件
+  hashMap.set(origin, target);
+
+  for (let prop in origin) {
+    if (origin.hasOwnProperty(prop)) {
+      target[prop] = cloneDeep(origin[prop], hashMap);
+    }
+  }
+  return target;
+}
+
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
+
+var car2 = cloneDeep(car1);
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456';
+
+console.log('Car2:', car2);
+console.log('Car1:', car1);
+
+var obj1 = {
+  name: 'obj1',
+};
+var obj2 = {
+  name: 'obj2',
+};
+obj1.obj2 = obj2;
+obj2.obj1 = obj1;
+
+console.log(cloneDeep(obj1));
+```
+
+`JSON.stringify` & `JSON.parse` 模擬：
+
+```js
+
+```
 
 <!-- Move to the prototypes' chapter -->
 
 ## JavaScript 的「物件」導向
 
-由[Object 章節 - 自動裝箱（Autoboxing）](../03-objects/article.md#自動裝箱autoboxing)的範例可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
+由 [Object 章節 - 自動裝箱（Autoboxing）](../03-objects/article.md#自動裝箱autoboxing) 的範例可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
 
-JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件的原型物件。
+JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件建構函式的原型物件。
 
-雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以連結到它，像是 `__proto__`（同時作為 getter 和 setter） 或較正式的 `Object.getPrototypeOf()` 和 `Object.setPrototypeOf()`；而函式建構式（function constructor）的原型可由該建構式的 `prototype` 來存取。
+雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以存取它，像是 `__proto__`（同時作為 getter 和 setter） 或較正規的 `Object.getPrototypeOf` 和 `Object.setPrototypeOf`；而建構函式（function constructor）的原型可由該建構函式的 `prototype` 來存取，例如 `String.prototype`。
 
 JavaScript 原型的圖解：
 
-![Prototype layout](../../assets/images/prototype-layout.jpg)
+![Prototype layout](../../assets/images/prototypes/01.jpg)
 
 ```js
-// Function Constructor
+// Function constructor
 function Person(name) {
   this.name = name;
 }
@@ -387,8 +567,9 @@ var person = new Person('Jerry');
 
 person.sayHi(); // Hi, i am Jerry.
 
-// instanceof 檢查物件是否為指定的建構式所建立的實體
+// `A instanceof B` 檢查 A 的原型鏈中是否存在 B 的 prototype（含上層）
 console.log(person instanceof Person); // true
+console.log(person instanceof Object); // true
 
 // person.__proto__ 指向 Person 的原型，也就是 Person.prototype
 console.log(person.__proto__ === Person.prototype); // true
@@ -399,14 +580,16 @@ console.log(person.hasOwnProperty('sayHi')); // false
 // prop in obj 則檢查整個原型鏈，無論屬性是否可列舉（enumerable）
 console.log('sayHi' in person); // true
 
-// 也能使用 for (prop in obj) 來遍歷原型鏈中所有可列舉的屬性
-for (prop in person) console.log(prop); // name sayHi
+// 也能使用 for...in 來印出原型鏈中所有可列舉的屬性
+for (let prop in person) console.log(prop); // name sayHi
 
 // 所以當 person 找不到 sayHi 時，就會沿著 __proto__ 到 Person 的原型查看
 console.log(person.sayHi === person.__proto__.sayHi); // true
 ```
 
-### 參考
+---
+
+參考資料：
 
 - [MDN - Object initializer](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Object_initializer)
 
