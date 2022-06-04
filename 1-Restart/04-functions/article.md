@@ -96,44 +96,48 @@ function caller() {
 caller();
 ```
 
-## 作用域或稱範疇（Scope）
+## 作用域（Scope）和作用域鏈（Scope Chain）
 
-若要理解閉包（Closure），就得理解作用域（Scope）和其產生的相關問題，這麼一來就得理解 GO & AO
+若要理解閉包（Closure），就得了解作用域（Scope）和其產生的相關問題，這麼一來就得了解 EC、VO（GO、AO） 了。
 
-- 「當全域執行的前一刻」會產生 GO（Global Object）。
+### EC（Execution Context）
 
-- 「當函式被定義時」會產生函式的作用域 `[[scope]]`，它的作用域 `[[scope]]` 中保存了作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會指向全域的 GO（Global Object）。
+EC 是 JavaScript 執行一段可執行程式碼時所建立的環境，分為全域（Global）EC 和函式（Function）EC 兩種。每個 EC 都有一個相關的 VO（Variable Object），在查找變數、函式時，會先查看當前 EC 的 VO，若沒找到就會到更外層 EC 的 VO 查看，而這樣多個 EC 的 VO 鏈結而成的串列就叫「作用域鏈（Scope Chain）」。
 
-- 「當函式被執行的前一刻」會建立該函式的 AO（Activation Object），這時作用域鏈的第 `0` 位（最頂端）會被 AO 取代，然後 GO（或是其他 context）變為第 `1` 位，所以變數會先從 AO 尋找，然後依序查找到 GO。
+### VO（Variable Object）
 
-- 「函式執行結束後」一般會銷毀自己的 AO，回到「當函式被定義時」的狀態，若其內部還有函式，那麼內部函式的 `[[scope]]` 也一併銷毀。
+每個 EC 都有一個相關的 VO，它用來儲存 EC 上的變數和函式。全域 EC 的 VO 就是 **GO（Global Object）**，在瀏覽器中就是 window 物件；而函式 EC 的 VO 則稱為 **AO（Activation Object）**。
 
 ### GO (Global Object)
 
-全域執行環境（Execution context）
+全域執行環境（Global Execution context）
 
-簡易流程：
+建立的規則：
 
 1. 建立 GO 物件（當全域執行的前一刻）
 
 2. 尋找變數宣告，將變數**宣告**作為 GO 的屬性名（property name）
 
-3. 尋找函式**宣告**和**定義**，將函式名作為 GO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
+3. 尋找函式**宣告**／**定義**，將函式名作為 GO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
 
-4. 執行，進行變數定義、賦值
+4. 執行，進行變數**定義**／**賦值**
 
 ```js
-var a = 1;
+console.log(a); // undefined -> function a() {}
+a = 1;
+console.log(a); // function a() {} -> 1
+var a;
 function a() {}
-
-console.log(a); // undefined -> function a() {} -> 1
+console.log(b); // undefined
+var b = function () {};
+console.log(b); // undefined -> function() {}
 ```
 
 ### AO (Activation Object)
 
 函式執行環境（Function execution context）
 
-簡易流程：
+建立的規則：
 
 1. 建立 AO 物件（當函式被執行的前一刻）
 
@@ -141,9 +145,9 @@ console.log(a); // undefined -> function a() {} -> 1
 
 3. 將引數（argument）和參數（parameter）統一
 
-4. 尋找函式**宣告**和**定義**，將函式名作為 AO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
+4. 尋找函式**宣告**／**定義**，將函式名作為 AO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
 
-5. 執行，進行變數定義、賦值
+5. 執行，進行變數**定義**／**賦值**
 
 ```js
 function aoTest(a, b) {
@@ -160,29 +164,47 @@ function aoTest(a, b) {
 aoTest(1);
 ```
 
+作用域鏈（Scope Chain）建立過程：
+
+- 當「全域執行的前一刻」會產生 GO。
+
+- 當「函式被定義時」它會產生隱藏的屬性 `[[Scopes]]`，`[[Scopes]]` 中保存了作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會指向全域的 GO（Global Object）。
+
+- 當「函式被執行的前一刻」會建立該函式的 AO，此時新的作用域鏈第 `0` 位會變為這個 AO，然後外層 context 的 VO 變為第 `1` 位，以此類推，所以查找變數會先從 AO 開始，然後依序查找到 GO。
+
+- 「函式執行結束後」一般情況會銷毀自己的 AO，回到「函式被定義時」的狀態，若其內部還有函式，那麼連內部函式的 `[[Scopes]]` 也一併銷毀。
+
+Chrome DevTools：
+
 ```js
-a = 123;
-function aoTest2(a, b) {
-  b = 2;
-  var c;
-  console.log(a); // undefined -> 1
-  console.log(b); // undefined -> 2
-  console.log(c); // undefined
-  c = function () {};
-  console.log(d); // undefined -> function d() {}
-  var d = 4;
-  function d() {}
+function foo(a) {
+  var local = 'foo';
+  console.dir(foo);
+  function bar(b) {
+    var local = 'bar';
+    console.dir(bar);
+  }
+  console.dir(bar);
+  bar();
 }
-
-var a;
-function a() {}
-
-aoTest2(1);
-
-console.log(a); // undefined -> function a() {} -> 123
+debugger;
+console.dir(foo);
+foo();
 ```
 
-#### 完整模擬 GO & AO
+(1)
+![Scope 01](../../assets/images/functions/Scope01.png)
+
+(2)
+![Scope 02](../../assets/images/functions/Scope02.png)
+
+(3)
+![Scope 03](../../assets/images/functions/Scope03.png)
+
+(4)
+![Scope 04](../../assets/images/functions/Scope04.png)
+
+#### 詳細模擬 GO & AO 建立的過程
 
 ```js
 a = 1;
@@ -314,7 +336,7 @@ GO = {
   test: function test(e) {
     /* ... */
   },
-  f: 5, // AO 找不到 f 變數，所以到 GO 建立
+  f: 5, // AO 沒有 f 變數，所以到 GO 建立（未進行變數宣告的特性）
 };
 
 AO = {
@@ -338,11 +360,13 @@ undefined
 5
 ```
 
-### 立即執行函式（IIFEs, Immediately Invoked Functions Expressions）
+<!-- 小心 Format（Shift+Alt+F）會破壞格式 -->
+
+## 立即執行函式（Immediately Invoked Functions Expressions, IIFEs）
 
 - 自動執行並在完成後銷毀、釋放記憶體（一般函式宣告會保存在 GO 中）
 
-- 產生獨立的函式作用域，不汙染全域，可以方便封裝、模組化等等
+- 產生獨立的函式作用域，不汙染全域，有利於封裝、模組化等等
 
 ```js
 // 寫法一
@@ -356,20 +380,20 @@ undefined
 }());
 ```
 
-錯誤：
+失敗：
 
 ```js
 function test1() {}() //Uncaught SyntaxError: Unexpected token ')'
 ```
 
-等同於：
+相當於：
 
 ```js
 function test1() {}
 () // 突然出現一個 () 於是報錯
 ```
 
-正確：
+成功：
 
 ```js
 var test2 = function () {
@@ -380,20 +404,20 @@ var test2 = function () {
 除了用小括號 `()`（parentheses）將函式包住，還有什麼方法可以讓函式宣告變成表達式呢？：
 
 ```js
-// 注意：只要轉換為表達式，那麼函式的名稱（宣告）則會無效
+// 注意：雖然轉換為表達式就可執行，但函式的名稱（宣告）則會無效，所以不能被呼叫
 false ||
   function test2() {
-    console.log('在 function 前加上 + - ! || && 等等就能做到');
+    console.log('在 function 前加上 + - ! ~ || && 等等就能做到');
   }();
 
-// test2(); // Uncaught ReferenceError: test2 is not defined
+test2(); // Uncaught ReferenceError: test2 is not defined
 ```
 
 其他特別的例子 - 多傳上引數，JS 引擎就會認為 `(123)` 是表達式，所以不報錯，但仍然不執行：
 
 ```js
 function test3() {
-  console.log('不會執行。(123) 是表達式，() JS引擎看不懂，報語法錯誤');
+  console.log('不會執行。(123) 是表達式；而 () 因JS引擎看不懂，報語法錯誤');
 }(123);
 ```
 
@@ -430,6 +454,8 @@ console.log(a);
 
 當「主函式」執行，它的「內部函式（未執行）」被回傳到外部並被保存住時，就會產生閉包（Closure ）。
 
+換句話說就是當一個函數定義的作用域和執行的作用域不同時，就會形成閉包。
+
 這個「內部函式」的作用域鏈（Scope Chain）會持續保存「主函式」的 AO （Activation Object），當「內部函式」執行後，會產生它自己的 AO 並放在作用域鏈的首位，其他 AO 和 GO 向後依序排列，因此可以訪問到其 context 的變數。
 
 > 過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
@@ -449,9 +475,9 @@ var test3 = test1();
 test3();
 ```
 
-### 模擬流程
+### 閉包模擬流程（瀏覽器環境）
 
-GO 的 execution context：
+全域 EC 建立的 GO：
 
 | Name     | Value                   |
 | -------- | ----------------------- |
@@ -463,19 +489,19 @@ GO 的 execution context：
 | test1    | function test1() {}     |
 | test3    | function **test2**() {} |
 
-當函式 `test1` 被定義時，產生它的作用域（Scope）：
+當函式 `test1` 被定義時，產生它的作用域鏈：
 
-| Scope     | Scope Chain |
-| --------- | ----------- |
-| [[Scope]] | GO          |
+| test1      | Scope Chain |
+| ---------- | ----------- |
+| [[Scopes]] | GO          |
 
-當函式 `test1` 被執行後，產生自己的 AO 並存至作用域鏈的首位：
+當函式 `test1` 被執行後，產生自己的 AO 並存至新的作用域鏈的首位：
 
-| Scope     | Scope Chain      |
-| --------- | ---------------- |
-| [[Scope]] | AO (`test1`)、GO |
+| test1      | Scope Chain      |
+| ---------- | ---------------- |
+| [[Scopes]] | AO (`test1`)、GO |
 
-函式 `test1` - AO 的 execution context：
+函式 `test1` EC 建立的 AO：
 
 | Name      | Value               |
 | --------- | ------------------- |
@@ -484,30 +510,30 @@ GO 的 execution context：
 | a         | 'test1 的變數 a'    |
 | test2     | function test2() {} |
 
-當函式 `test2` 被定義時，產生和上級 `test1` 一樣的作用域（Scope）：
+當函式 `test2` 被定義時，產生和上級 `test1` 一樣的作用域鏈：
 
-| Scope     | Scope Chain      |
-| --------- | ---------------- |
-| [[Scope]] | AO (`test1`)、GO |
+| test2      | Scope Chain      |
+| ---------- | ---------------- |
+| [[Scopes]] | AO (`test1`)、GO |
 
 當函式 `test2` 被執行後，產生自己的 AO 並存至作用域鏈的首位：
 
-| Scope     | Scope Chain                    |
-| --------- | ------------------------------ |
-| [[Scope]] | AO (`test2`)、AO (`test1`)、GO |
+| test2      | Scope Chain                    |
+| ---------- | ------------------------------ |
+| [[Scopes]] | AO (`test2`)、AO (`test1`)、GO |
 
-函式 `test2` - AO 的 execution context：
+函式 `test2` EC 建立的 AO：
 
 | Name      | Value        |
 | --------- | ------------ |
 | this      | window       |
 | arguments | [array-like] |
 
-當函式 `test1` 執行完後的作用域（Scope）：
+當函式 `test1` 執行完後的作用域鏈：
 
-| Scope     | Scope Chain          |
-| --------- | -------------------- |
-| [[Scope]] | ~~AO (`test1`)~~、GO |
+| test1      | Scope Chain          |
+| ---------- | -------------------- |
+| [[Scopes]] | ~~AO (`test1`)~~、GO |
 
 函式 `test1` 執行完後，回傳函式 `test2` 到變數 `test3`，此時函式 `test1` 的 Scope Chain 切斷和自己 AO 的連結（回到函式 `test1` 被定義時的狀態），但不能直接回收 AO 的記憶體，因為函式 `test2` 還在使用它，這時候就形成了「閉包（Closure）」。
 
@@ -517,7 +543,7 @@ GO 的 execution context：
 
 ### `call` & `apply` & `bind`
 
-影響 this 指向的優先順序：
+影響 this 指向的優先權測試：
 
 ```js
 function Car(brand, color) {
@@ -530,8 +556,8 @@ function Car(brand, color) {
 }
 
 var myCar = {
-  license: 'ABC-123'
-}
+  license: 'ABC-123',
+};
 
 var boundCar = Car.bind(myCar);
 
@@ -539,32 +565,41 @@ var boundCar = Car.bind(myCar);
 var boundCar = Car.bind(myCar, 'Toyota');
 
 var car1 = boundCar('Ferrari', 'white');
-console.log(car1); // {license: 'ABC-123', brand: 'Ferrari', color: 'white'}
+console.log('car1 (bind):', car1);
+// {license: 'ABC-123', brand: 'Ferrari', color: 'white'}
 
 var car2 = boundCar.call({ license: 'XYZ-456' }, 'BMW', 'blue');
-console.log(car2); // {license: 'ABC-123', brand: 'BMW', color: 'blue'}
+console.log('car2 (call):', car2);
+// {license: 'ABC-123', brand: 'BMW', color: 'blue'}
 
 var car3 = boundCar.apply({ license: 'XYZ-456' }, ['BMW', 'green']);
-console.log(car3); // {license: 'ABC-123', brand: 'BMW', color: 'green'}
+console.log('car3 (apply):', car3);
+// {license: 'ABC-123', brand: 'BMW', color: 'green'}
 
 var car4 = new boundCar('Tesla', 'silver');
 
 /* 忽略全部或部分的引數，不過 this 還是指向全新的物件 */
-var car4 = new boundCar('silver'); // {brand: 'Toyota', color: 'silver'}
+var car4 = new boundCar('silver');
+// {brand: 'Toyota', color: 'silver'}
 
-console.log(car4); // {brand: 'Tesla', color: 'red'}
+console.log('car4 (new):', car4);
+// {brand: 'Tesla', color: 'red'}
 ```
 
-由上方例子可知 `new` 關鍵字的優先權較高，接著是 `bind`，然後才是 `call` 跟 `apply`，它們可以說是相同的東西（只是引數填入的方式有差異），最後是一般的函式（取決於如何呼叫的）。
+由上方例子可知 `new` 關鍵字的優先權較高，接著是 `bind`，然後才是 `call` 跟 `apply`，`call` 跟 `apply` 可以說是相同的東西（只是引數填入的形式不同），最後是一般的函式（隱性綁定，取決於如何呼叫的）。
 
 另外 ES6 的箭頭函式（Arrow function）擁有更高的優先權，它沒有自己的 `this`，箭頭函式的 `this` 取決於定義時的 context，因此 `bind`、`call` 和 `apply` 之類的方法不能改變其 `this` 的指向；而且箭頭函式沒有 `new`、`arguments` 和 `super` 等語法，所以也不能當作建構器（Constructor）來使用。
 
-參考
+---
+
+參考資料：
 
 - [MDN - Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions)
 
 - [MDN - Arrow function expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 
 - [JavaScript 深入之变量对象 #5](https://github.com/mqyqingfeng/Blog/issues/5)
+
+- [JavaScript 深入之作用域链 #6](https://github.com/mqyqingfeng/Blog/issues/6)
 
 <!-- 生成 AST： https://resources.jointjs.com/demos/javascript-ast -->
