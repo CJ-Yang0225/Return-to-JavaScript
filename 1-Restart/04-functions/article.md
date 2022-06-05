@@ -590,6 +590,56 @@ console.log('car4 (new):', car4);
 
 另外 ES6 的箭頭函式（Arrow function）擁有更高的優先權，它沒有自己的 `this`，箭頭函式的 `this` 取決於定義時的 context，因此 `bind`、`call` 和 `apply` 之類的方法不能改變其 `this` 的指向；而且箭頭函式沒有 `new`、`arguments` 和 `super` 等語法，所以也不能當作建構器（Constructor）來使用。
 
+<!-- TODO -->
+
+## 偏函式應用（Partial Application）
+
+## 柯里化（Currying）函式
+
+```js
+// 增強函式的通用性
+function currying(fn) {
+  var args = [];
+
+  return function curried() {
+    args = args.concat(Array.from(arguments));
+
+    if (args.length >= fn.length) {
+      return fn.apply(null, args);
+    }
+
+    return curried;
+  };
+}
+
+/* -------------------- 分隔線 -------------------- */
+
+function isType(type, value) {
+  return Object.prototype.toString.call(value) === `[object ${type}]`;
+}
+
+// var isString = currying(isType)('String');
+// console.log('isString:', isString('hello'));
+
+var typeUtil = {};
+[
+  'String',
+  'Number',
+  'Boolean',
+  'Object',
+  'Array',
+  'Function',
+  'Null',
+  'Undefined',
+].forEach(function (type) {
+  typeUtil['is' + type] = currying(isType)(type);
+});
+
+console.log('isString:', typeUtil.isString('hello'));
+```
+
+## 重組（Compose）函式
+
 ---
 
 參考資料：
