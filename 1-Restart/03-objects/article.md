@@ -377,7 +377,7 @@ var car1 = {
 
 var car2 = cloneShallow(car1);
 car2.brand = 'BMW';
-car2.info.license = 'XYZ-456';
+car2.info.license = 'XYZ-456'; // 會改變原本物件的值
 console.log('Car2:', car2);
 console.log('Car1:', car1);
 ```
@@ -385,13 +385,39 @@ console.log('Car1:', car1);
 `Object.assign` 模擬：
 
 ```js
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
 
+var car2 = Object.assign({}, car1);
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456'; // 會改變原本物件的值
+console.log('Car2:', car2);
+console.log('Car1:', car1);
 ```
 
-ES6 - Spread syntax (`...`)模擬：
+ES6 - Spread syntax (`...`) 模擬：
 
 ```js
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
 
+var car2 = { ...car1 };
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456'; // 會改變原本物件的值
+console.log('Car2:', car2);
+console.log('Car1:', car1);
 ```
 
 ### 深拷貝
