@@ -4,38 +4,38 @@
 
 > 「設計圖就是類別」，而根據設計圖生產的「零件就是物件」。
 
-JavaScript 中的 Class 是透過 Function Constructor 包裝出來的，可以提升可讀性和簡化操作。
+JavaScript 中的 Class 是透過 Function Constructor 包裝出來的，這個語法糖可以提升可讀性和簡化操作。
 
 宣告一個父類別：
 
-```javascript
+```js
 class MyComponent {
   constructor(props) {
     this.props = props;
   }
 
   checkProps() {
-    console.log("Color: " + this.props.color);
+    console.log('Color: ' + this.props.color);
   }
 }
 ```
 
 內部實際操作：
 
-```javascript
+```js
 function MyComponent(props) {
   this.props = props;
 }
 
 // 在 MyComponent 的原型物件中宣告一個 function 給實例使用
 MyComponent.prototype.checkProps = function () {
-  console.log("Color: " + this.props.color);
+  console.log('Color: ' + this.props.color);
 };
 ```
 
 若子類別繼承父類別：
 
-```javascript
+```js
 // 以上省略
 
 class Counter extends MyComponent {
@@ -50,7 +50,7 @@ class Counter extends MyComponent {
   }
 
   handleClick() {
-    console.log("Counter Value: " + this._state.count);
+    console.log('Counter Value: ' + this._state.count);
   }
 
   increase() {
@@ -65,19 +65,21 @@ class Counter extends MyComponent {
 
 其中 `extends` 繼承的背後原理：
 
-```javascript
-Object.setPrototypeOf(Counter, MyComponent); // 同 Counter.prototype.__proto__ = MyComponent.prototype;
+```js
+// 同 Counter.prototype.__proto__ = MyComponent.prototype;
+Object.setPrototypeOf(Counter, MyComponent);
 ```
 
 用 Function 實現：
 
-```javascript
+```js
 // 以上省略
 
 function Counter(props) {
-  // 將 this 傳給 MyComponent 建立 properties
-  MyComponent.prototype.constructor.call(this, props);
   this._state = { count: 0 };
+
+  // 將 this 傳給 MyComponent ，根據 props 建立 properties
+  MyComponent.prototype.constructor.call(this, props); // super(props)
 }
 
 // 讓 Counter 的實例使用 MyComponent 的 method
@@ -86,7 +88,7 @@ Counter.prototype.checkProps = function () {
 };
 
 Counter.prototype.handleClick = function () {
-  console.log("Counter Value: " + this._state.count);
+  console.log('Counter Value: ' + this._state.count);
 };
 
 Counter.prototype.increase = function () {
@@ -100,15 +102,15 @@ Counter.prototype.decrease = function () {
 
 創建實例（instance）：
 
-```javascript
-const counter = new Counter({ color: "red" });
+```js
+const counter = new Counter({ color: 'red' });
 counter.checkProps();
 counter.increase(); // +1
 counter.increase(); // +1
 counter.decrease(); // -1
 counter.handleClick();
 
-const counter2 = new Counter({ color: "blue" });
+const counter2 = new Counter({ color: 'blue' });
 counter2.checkProps();
 counter2.decrease(); // -1
 counter2.decrease(); // -1
@@ -118,7 +120,7 @@ counter2.handleClick();
 
 執行結果：
 
-```console
+```bash
 Color: red
 Counter Value: 1
 Color: blue

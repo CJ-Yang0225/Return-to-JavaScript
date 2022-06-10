@@ -1,13 +1,13 @@
 function addClickListener() {
   function log() {
-    console.log("click");
+    console.log('click');
   }
 
-  document.addEventListener("click", log);
+  document.addEventListener('click', log);
 
   return () => {
-    console.log("removed");
-    document.removeEventListener("click", log);
+    console.log('removed');
+    document.removeEventListener('click', log);
   };
 }
 

@@ -1,14 +1,14 @@
 # 疑問：為何 useCallback 讓父元件 counter.current 少加一次？
 
 ```js
-import React, { useState, useCallback, useRef } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useCallback, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
 function MeasureExample() {
   const [height, setHeight] = useState(0);
   const counter = useRef(0);
   counter.current++;
-  console.log("Parent ", counter.current);
+  console.log('Parent ', counter.current);
 
   const measureRef = (node) => {
     if (!node) return;
@@ -34,7 +34,7 @@ function MeasureExample() {
 
 function Child({ measureRef, counter, func }) {
   counter.current++;
-  console.log("Child ", counter.current);
+  console.log('Child ', counter.current);
   const oldFunc = useRef(func);
   console.log(oldFunc.current === func);
   oldFunc.current = func;
@@ -45,7 +45,6 @@ function Child({ measureRef, counter, func }) {
   return <h1 ref={measureRef}>Hello, world</h1>;
 }
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 ReactDOM.render(<MeasureExample />, rootElement);
-
 ```
