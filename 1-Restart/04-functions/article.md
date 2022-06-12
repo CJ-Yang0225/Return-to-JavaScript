@@ -98,7 +98,7 @@ caller();
 
 ## 作用域（Scope）和作用域鏈（Scope Chain）
 
-若要理解閉包（Closure），就得了解作用域（Scope）和其產生的相關問題，這麼一來就得了解 EC、VO（GO、AO） 了。
+若要理解閉包（Closure），就得了解作用域（Scope）和其產生的相關知識，如此一來就得了解一下 EC、VO（GO、AO） 了。
 
 ### EC（Execution Context）
 
@@ -112,7 +112,7 @@ EC 是 JavaScript 執行一段可執行程式碼時所建立的環境，分為�
 
 全域執行環境（Global Execution context）
 
-建立的規則：
+建立的流程：
 
 1. 建立 GO 物件（當全域執行的前一刻）
 
@@ -120,24 +120,37 @@ EC 是 JavaScript 執行一段可執行程式碼時所建立的環境，分為�
 
 3. 尋找函式**宣告**／**定義**，將函式名作為 GO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
 
-4. 執行，進行變數**定義**／**賦值**
+4. 執行，進行變數**定義**（**賦值**）
 
 ```js
-console.log(a); // undefined -> function a() {}
+console.log(a);
 a = 1;
-console.log(a); // function a() {} -> 1
+console.log(a);
 var a;
 function a() {}
-console.log(b); // undefined
+console.log(b);
 var b = function () {};
-console.log(b); // undefined -> function() {}
+console.log(b);
+```
+
+最後 Global EC 的 GO：
+
+```js
+/* pseudo code */
+globalEC = {
+  GO: {
+    ...
+    a: 1, // undefined -> function a() {} -> 1
+    b: function () {}, // undefined -> function () {}
+  },
+};
 ```
 
 ### AO (Activation Object)
 
 函式執行環境（Function execution context）
 
-建立的規則：
+建立的流程：
 
 1. 建立 AO 物件（當函式被執行的前一刻）
 
@@ -147,62 +160,79 @@ console.log(b); // undefined -> function() {}
 
 4. 尋找函式**宣告**／**定義**，將函式名作為 AO 的屬性名，函式本身作為屬性值（property value）。不包含函式表達式（function expression）
 
-5. 執行，進行變數**定義**／**賦值**
+5. 執行，進行變數**定義**（**賦值**）
 
 ```js
 function aoTest(a, b) {
-  console.log(a); // undefined -> 1 -> function a() {}
-  arguments[0] = 123;
-  console.log(a); // function a() {} -> 123
+  console.log(a);
+  arguments[0] = 123; // 和 a 有特殊的映射關係
+  console.log(a);
   function a() {}
-  console.log(a); // 123
-  console.log(b); // undefined
+  console.log(a);
+  console.log(b);
   b = function () {};
-  console.log(b); // function () {}
+  console.log(b);
 }
 
 aoTest(1);
 ```
 
-作用域鏈（Scope Chain）建立過程：
+最後 aoTestEC 的 AO：
 
-- 當「全域執行的前一刻」會產生 GO。
+```js
+/* pseudo code */
+aoTestEC = {
+  AO: {
+    this: window,
+    arguments: [array - like],
+    a: 123, // undefined -> function a() {} -> 123
+    b: function () {}, // undefined -> function () {}
+  },
+};
+```
 
-- 當「函式被定義時」它會產生隱藏的屬性 `[[Scopes]]`，`[[Scopes]]` 中保存了作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會指向全域的 GO（Global Object）。
+### 作用域鏈（Scope Chain）
 
-- 當「函式被執行的前一刻」會建立該函式的 AO，此時新的作用域鏈第 `0` 位會變為這個 AO，然後外層 context 的 VO 變為第 `1` 位，以此類推，所以查找變數會先從 AO 開始，然後依序查找到 GO。
+建立過程：
 
-- 「函式執行結束後」一般情況會銷毀自己的 AO，回到「函式被定義時」的狀態，若其內部還有函式，那麼連內部函式的 `[[Scopes]]` 也一併銷毀。
+- 當「全域執行的前一刻」會產生 GO，然後將 GO 放到 scopeChain 中。
 
-Chrome DevTools：
+- 當「函式被定義時」它內部的隱藏屬性 `[[Scope]]` 會產生作用域鏈（Scope Chain），而作用域鏈一開始的第 `0` 位會存放全域的 GO。
+
+- 當「函式被執行的前一刻」會建立該函式的 AO，此時新的作用域鏈第 `0` 位會變為這個 context 的 AO，然後外層 context 的 VO／AO 變為第 `1` 位，以此類推，所以查找變數會先從 AO 開始，然後依序查找到 GO。
+
+- 當「函式執行結束後」一般情況會銷毀自己的 AO，`[[Scope]]` 回到「函式被定義時」的狀態。
+
+Chrome DevTools 模擬：
 
 ```js
 function foo(a) {
-  var local = 'foo';
-  console.dir(foo);
-  function bar(b) {
-    var local = 'bar';
-    console.dir(bar);
+  a = 'foo';
+  console.log('foo:', a);
+
+  function bar() {
+    a += 'bar';
+    console.log('bar:', a);
   }
-  console.dir(bar);
+
   bar();
 }
+var a = 'global';
+
 debugger;
-console.dir(foo);
-foo();
+foo(a);
 ```
 
 (1)
-![Scope 01](../../assets/images/functions/Scope01.png)
+![Scope 01](../../assets/images/functions/Scope-01.png)
 
 (2)
-![Scope 02](../../assets/images/functions/Scope02.png)
+![Scope 02](../../assets/images/functions/Scope-02.png)
 
 (3)
-![Scope 03](../../assets/images/functions/Scope03.png)
+![Scope 03](../../assets/images/functions/Scope-03.png)
 
-(4)
-![Scope 04](../../assets/images/functions/Scope04.png)
+`bar` 的作用域鏈（Scope Chain）會保存 `foo` 的 AO （Activation Object），當 `bar` 執行後，會產生它自己的 AO 並放在作用域鏈的首位，其他 AO 和 GO 向後依序排列，因此可以訪問到其它 context 的變數。
 
 #### 詳細模擬 GO & AO 建立的過程
 
@@ -413,20 +443,20 @@ false ||
 test2(); // Uncaught ReferenceError: test2 is not defined
 ```
 
-其他特別的例子 - 多傳上引數，JS 引擎就會認為 `(123)` 是表達式，所以不報錯，但仍然不執行：
+多傳上引數，JS 引擎就會認為 `(123)` 是表達式，所以不報錯，但仍然不執行：
 
 ```js
 function test3() {
-  console.log('不會執行。(123) 是表達式；而 () 因JS引擎看不懂，報語法錯誤');
+  console.log('不會執行。(123) 是表達式；而只有 () JS 引擎看不懂，報語法錯誤');
 }(123);
 ```
 
-IIFE 的測驗題：
+延伸的其他知識：
 
 ```js
 var a = 123;
 
-// 注意： (function b() {})
+// 注意： 括起來後變成表達式，函式的名稱（宣告）會無效
 if (function b() {}) {
   a += typeof b;
 }
@@ -452,13 +482,14 @@ console.log(a);
 
 ## 閉包（Closure）
 
-當「主函式」執行，它的「內部函式（未執行）」被回傳到外部並被保存住時，就會產生閉包（Closure ）。
+閉包跟作用域鏈息息相關，以實用面來說，指的一個函式它所在的 context 已經銷毀了，但是它還引用著被銷毀的 context 之變數。
 
-換句話說就是當一個函數定義的作用域和執行的作用域不同時，就會形成閉包。
+- 所以當「主函式」執行後，它的「內部函式」被回傳到外部並被保存住時，就會產生閉包。
 
-這個「內部函式」的作用域鏈（Scope Chain）會持續保存「主函式」的 AO （Activation Object），當「內部函式」執行後，會產生它自己的 AO 並放在作用域鏈的首位，其他 AO 和 GO 向後依序排列，因此可以訪問到其 context 的變數。
+- 換句話說就是當一個函數定義的作用域和執行的作用域不同時，就會形成閉包。
 
-> 過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
+
+### 閉包模擬流程（瀏覽器環境）
 
 ```js
 function test1() {
@@ -475,8 +506,6 @@ var test3 = test1();
 test3();
 ```
 
-### 閉包模擬流程（瀏覽器環境）
-
 全域 EC 建立的 GO：
 
 | Name     | Value                   |
@@ -491,15 +520,15 @@ test3();
 
 當函式 `test1` 被定義時，產生它的作用域鏈：
 
-| test1      | Scope Chain |
-| ---------- | ----------- |
-| [[Scopes]] | GO          |
+| test1     | Scope Chain |
+| --------- | ----------- |
+| [[Scope]] | GO          |
 
 當函式 `test1` 被執行後，產生自己的 AO 並存至新的作用域鏈的首位：
 
-| test1      | Scope Chain      |
-| ---------- | ---------------- |
-| [[Scopes]] | AO (`test1`)、GO |
+| test1     | Scope Chain      |
+| --------- | ---------------- |
+| [[Scope]] | AO (`test1`)、GO |
 
 函式 `test1` EC 建立的 AO：
 
@@ -512,15 +541,15 @@ test3();
 
 當函式 `test2` 被定義時，產生和上級 `test1` 一樣的作用域鏈：
 
-| test2      | Scope Chain      |
-| ---------- | ---------------- |
-| [[Scopes]] | AO (`test1`)、GO |
+| test2     | Scope Chain      |
+| --------- | ---------------- |
+| [[Scope]] | AO (`test1`)、GO |
 
 當函式 `test2` 被執行後，產生自己的 AO 並存至作用域鏈的首位：
 
-| test2      | Scope Chain                    |
-| ---------- | ------------------------------ |
-| [[Scopes]] | AO (`test2`)、AO (`test1`)、GO |
+| test2     | Scope Chain                    |
+| --------- | ------------------------------ |
+| [[Scope]] | AO (`test2`)、AO (`test1`)、GO |
 
 函式 `test2` EC 建立的 AO：
 
@@ -531,13 +560,15 @@ test3();
 
 當函式 `test1` 執行完後的作用域鏈：
 
-| test1      | Scope Chain          |
-| ---------- | -------------------- |
-| [[Scopes]] | ~~AO (`test1`)~~、GO |
+| test1     | Scope Chain          |
+| --------- | -------------------- |
+| [[Scope]] | ~~AO (`test1`)~~、GO |
 
 函式 `test1` 執行完後，回傳函式 `test2` 到變數 `test3`，此時函式 `test1` 的 Scope Chain 切斷和自己 AO 的連結（回到函式 `test1` 被定義時的狀態），但不能直接回收 AO 的記憶體，因為函式 `test2` 還在使用它，這時候就形成了「閉包（Closure）」。
 
 當函式 `test2` 執行完後，它的 Scope Chain 也會切斷和自己 AO 的連結，但是仍然存著函式 `test1` 的 AO 和 GO，若再次執行則會重新生成自己的 AO。
+
+> 閉包會保留著它外層 context 的 AO，因此過度使用閉包可能會導致記憶體流失（memory leak）或是載入變慢。
 
 ## 函式的方法
 
