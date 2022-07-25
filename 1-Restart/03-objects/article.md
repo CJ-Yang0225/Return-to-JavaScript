@@ -240,11 +240,29 @@ console.log(obj2); // { [[Prototype]]: { num: 1 } }
 
 當物件沒有定義 [`Symbol.toPrimitive`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) 又需要轉型（Coercion）為 Primitive 型別時，會經過以下步驟：
 
-1. object 若**有**定義 `valueOf` 則會優先使用，除非 `valueOf` 返回的值不能轉變為目標類型，才會再執行 `toString`
+Number：
 
-2. object 若**沒有**定義 `valueOf` 則會以 `toString` 為優先使用
+1. 物件若**有**定義 `valueOf` 則會優先使用，除非 `valueOf` 返回的值不能轉變為目標類型，才會再執行 `toString`
+
+2. 物件若**沒有**定義 `valueOf` 則會以 `toString` 為優先使用
 
 3. 若都沒有 `valueOf` 和 `toString` 兩方法，可能導致錯誤的發生
+
+String：
+
+1. 物件若**有**定義 `toString` 則會優先使用，除非 `toString` 返回的值不能轉變為目標類型，才會再執行 `valueOf`
+
+2. 物件若**沒有**定義 `toString` 則會以 `valueOf` 為優先使用
+
+3. 若都沒有 `valueOf` 和 `toString` 兩方法，可能導致錯誤的發生
+
+兩者的主要區別在於使用 `toString` 和 `valueOf` 的先後順序。
+
+另外的情況：
+
+- 如果物件為 `Date`，則以 String 的流程轉換
+
+- 其他預設以 Number 的流程轉換
 
 由 [Object.create](#objectcreate) 範例可得知 `Object.create(null)` 創建的物件是沒有 `[[Prototype]]` 的，所以自然沒有 Object 的原型方法。
 
@@ -502,7 +520,7 @@ function cloneDeep(origin, hashMap = new WeakMap()) {
 
   const constructor = origin.constructor;
 
-  // Date、RegExp、Function 實例的拷貝
+  // Date、RegExp、Function 實例的拷貝（函式拷貝部分有爭議，練習為主）
   if (/(Date|RegExp)/.test(constructor.name)) {
     return new constructor(origin);
   } else if (/Function/.test(constructor.name)) {
