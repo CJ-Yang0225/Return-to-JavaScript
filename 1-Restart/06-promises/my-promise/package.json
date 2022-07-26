@@ -1,0 +1,12 @@
+{
+  "name": "my-promise",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "promises-aplus-tests ./MyPromise.js"
+  },
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
