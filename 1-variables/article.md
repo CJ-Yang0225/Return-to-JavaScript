@@ -143,7 +143,7 @@ var a = 'parent `a`';
   console.log(a); // Uncaught ReferenceError: Cannot access `a` before initialization
 
   let a = 'child `a`';
-};
+}
 ```
 
 `const`:
@@ -177,7 +177,7 @@ var b = 'parent `b`';
 
 `var` 不具備區塊作用域（Block Scope），所以若不在 `function` 之中使用可能會造成奇怪的問題。
 
-常見的例子 - 想要1到5秒正確地依序印出 `1`、`2`、`3`、`4`、`5`：
+常見的例子 - 想要 1 到 5 秒正確地依序印出 `1`、`2`、`3`、`4`、`5`：
 
 ```js
 // var i = 1; 實際上就像在這宣告
