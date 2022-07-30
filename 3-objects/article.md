@@ -578,7 +578,21 @@ console.log(cloneDeep(obj1));
 `JSON.stringify` & `JSON.parse` 模擬：
 
 ```js
+var car1 = {
+  brand: 'Benz',
+  color: 'black',
+  info: {
+    owner: 'A',
+    license: 'ABC-123',
+  },
+};
 
+var car2 = JSON.parse(JSON.stringify(car1));
+car2.brand = 'BMW';
+car2.info.license = 'XYZ-456';
+
+console.log('Car2:', car2);
+console.log('Car1:', car1);
 ```
 
 <!-- Move to the prototypes' chapter -->
