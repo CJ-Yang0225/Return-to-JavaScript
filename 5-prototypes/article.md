@@ -1,8 +1,54 @@
 # 原型（Prototype）與繼承（inheritance）
 
+由 [Object 章節 - 自動裝箱（Autoboxing）](../3-objects/article.md#自動裝箱autoboxing) 的範例可以得知，JavaScript 確實是以「物件」為核心來設計，不過此「物件」並非像 Java、C++ 等透過類別（class）建構出的物件實例（object instance），JavaScript 是原型架構（prototype-based）的語言，所以沒有真正意義上的 class（只是語法糖），而是在每個物件中，利用名為原型（prototype）的物件作為模板來繼承，而原型本身可能也有它的原型，像一條條鏈子相互鏈結，稱之為原型鏈（prototype chain）。
+
+JavaScript 的物件中（除了 `null`、`undefined`）都隱藏一種特殊屬性 `[[Prototype]]`，它可以指向此物件建構函式的原型物件。
+
+雖然 `[[Prototype]]` 是隱藏的，但仍然有些方式可以存取它，像是 `__proto__`（同時作為 getter 和 setter） 或較正規的 `Object.getPrototypeOf` 和 `Object.setPrototypeOf`；而建構函式（function constructor）的原型可由該建構函式的 `prototype` 來存取，例如 `String.prototype`。
+
+JavaScript 原型的圖解：
+
+![Prototype layout](../assets/images/prototypes/01.jpg)
+
+```js
+// Function constructor
+function Person(name) {
+  this.name = name;
+}
+
+// 可以為 Person 的原型增添方法，讓所有實例共用（一般會把方法寫在 prototype 中，避免重複建立）
+Person.prototype.sayHi = function () {
+  console.log(`Hi, i am ${this.name}.`);
+};
+
+// 建構 Person 的實例
+var person = new Person('Jerry');
+
+person.sayHi(); // Hi, i am Jerry.
+
+// `A instanceof B` 檢查 A 的原型鏈中是否存在 B 的 prototype（含上層）
+console.log(person instanceof Person); // true
+console.log(person instanceof Object); // true
+
+// person.__proto__ 指向 Person 的原型，也就是 Person.prototype
+console.log(person.__proto__ === Person.prototype); // true
+
+// 可以透過 hasOwnProperty 回傳物件本身是否有該屬性
+console.log(person.hasOwnProperty('sayHi')); // false
+
+// prop in obj 則檢查整個原型鏈，無論屬性是否可列舉（enumerable）
+console.log('sayHi' in person); // true
+
+// 也能使用 for...in 來印出原型鏈中所有可列舉的屬性
+for (let prop in person) console.log(prop); // name sayHi
+
+// 所以當 person 找不到 sayHi 時，就會沿著 __proto__ 到 Person 的原型查看
+console.log(person.sayHi === person.__proto__.sayHi); // true
+```
+
 `Car` 建構產生 `car1` 實例，這時再重新賦值 `Car` 的原型物件一個新物件，不會影響已實例化之 `car1` 上的 `[[Prototype]]`（`__proto__`），因為實際上改的是 `Car.prototype`，而已實例化之 `car1` 的 `[[Prototype]]` 指向的仍是舊物件之位址。
 
-例子：
+繼承的例子：
 
 ```js
 function Car() {}
@@ -22,7 +68,7 @@ console.log(car1.brand); // Benz
 console.log(car2.brand); // Mazda
 ```
 
-![prototypes](../../assets/images/prototypes/02.png)
+![prototypes](../assets/images/prototypes/02.png)
 
 ```js
 Object.__proto__ === Function.prototype;
